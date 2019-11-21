@@ -1,5 +1,6 @@
 package io.github.vpavic.bearerauth;
 
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -12,6 +13,7 @@ class AuthorizationHeaderBearerTokenExtractor implements BearerTokenExtractor {
 
     @Override
     public BearerToken apply(HttpExchange httpExchange) {
+        Objects.requireNonNull(httpExchange, "httpExchange must not be null");
         String authorizationHeader = httpExchange.getRequestHeader("Authorization");
         if (authorizationHeader == null) {
             return null;

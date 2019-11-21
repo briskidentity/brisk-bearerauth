@@ -1,11 +1,12 @@
 package io.github.vpavic.bearerauth;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
- *
+ * Representation of bearer token.
  */
-public class BearerToken {
+public class BearerToken implements Serializable {
 
     private String value;
 
@@ -15,7 +16,7 @@ public class BearerToken {
     }
 
     /**
-     * @return
+     * @return the bearer token value
      */
     public String getValue() {
         return this.value;
@@ -35,7 +36,7 @@ public class BearerToken {
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.value);
+        return this.value.hashCode();
     }
 
 }
