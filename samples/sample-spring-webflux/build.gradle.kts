@@ -5,7 +5,7 @@ plugins {
 }
 
 dependencies {
-    implementation(enforcedPlatform(SpringBootPlugin.BOM_COORDINATES))
+    implementation(platform(SpringBootPlugin.BOM_COORDINATES))
 
     implementation(project(":bearerauth-core"))
     implementation("org.springframework.boot:spring-boot-starter-webflux")
