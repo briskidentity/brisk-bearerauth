@@ -27,7 +27,7 @@ public class WebFluxBearerAuthenticationFilter implements WebFilter {
 
     private AuthorizationContextResolver authorizationContextResolver() {
         return bearerToken -> {
-            switch (bearerToken.getValue()) {
+            switch (bearerToken.toString()) {
                 case "valid":
                     return CompletableFuture.completedFuture(
                             new AuthorizationContext(Collections.emptySet(), Instant.MAX, Collections.emptyMap()));

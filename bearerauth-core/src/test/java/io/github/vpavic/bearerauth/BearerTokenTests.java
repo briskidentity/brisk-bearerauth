@@ -23,11 +23,6 @@ class BearerTokenTests {
     }
 
     @Test
-    void getValue_ValidValue_ShouldReturnValue() {
-        assertThat(new BearerToken("test").getValue()).isEqualTo("test");
-    }
-
-    @Test
     @SuppressWarnings("EqualsWithItself")
     void equals_SameToken_ShouldReturnTrue() {
         BearerToken bearerToken = new BearerToken("test");

@@ -29,7 +29,7 @@ public class ServletBearerAuthenticationFilter extends HttpFilter {
 
     private AuthorizationContextResolver authorizationContextResolver() {
         return bearerToken -> {
-            switch (bearerToken.getValue()) {
+            switch (bearerToken.toString()) {
                 case "valid":
                     return CompletableFuture.completedFuture(
                             new AuthorizationContext(Collections.emptySet(), Instant.MAX, Collections.emptyMap()));

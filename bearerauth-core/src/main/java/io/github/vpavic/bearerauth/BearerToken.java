@@ -15,13 +15,6 @@ public class BearerToken implements Serializable {
         this.value = value;
     }
 
-    /**
-     * @return the bearer token value
-     */
-    public String getValue() {
-        return this.value;
-    }
-
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -37,6 +30,11 @@ public class BearerToken implements Serializable {
     @Override
     public int hashCode() {
         return this.value.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return this.value;
     }
 
 }
