@@ -1,9 +1,10 @@
 package sample;
 
 import io.github.vpavic.bearerauth.AuthorizationContext;
-import io.github.vpavic.bearerauth.AuthorizationContextResolver;
 import io.github.vpavic.bearerauth.BearerAuthenticationHandler;
+import io.github.vpavic.bearerauth.BearerToken;
 import io.github.vpavic.bearerauth.HttpExchange;
+import io.github.vpavic.bearerauth.MapAuthorizationContextResolver;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
@@ -12,8 +13,8 @@ import reactor.core.publisher.Mono;
 
 import java.time.Instant;
 import java.util.Collections;
-import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 public class WebFluxBearerAuthenticationFilter implements WebFilter {
@@ -21,23 +22,13 @@ public class WebFluxBearerAuthenticationFilter implements WebFilter {
     private final BearerAuthenticationHandler bearerAuthenticationHandler;
 
     public WebFluxBearerAuthenticationFilter() {
+        Map<BearerToken, AuthorizationContext> authorizationContexts = new HashMap<>();
+        authorizationContexts.put(new BearerToken("valid"),
+                new AuthorizationContext(Collections.emptySet(), Instant.MAX, Collections.emptyMap()));
+        authorizationContexts.put(new BearerToken("expired"),
+                new AuthorizationContext(Collections.emptySet(), Instant.MIN, Collections.emptyMap()));
         this.bearerAuthenticationHandler = BearerAuthenticationHandler.builder(
-                bearerToken -> authorizationContextResolver().apply(bearerToken)).build();
-    }
-
-    private AuthorizationContextResolver authorizationContextResolver() {
-        return bearerToken -> {
-            switch (bearerToken.toString()) {
-                case "valid":
-                    return CompletableFuture.completedFuture(
-                            new AuthorizationContext(Collections.emptySet(), Instant.MAX, Collections.emptyMap()));
-                case "expired":
-                    return CompletableFuture.completedFuture(
-                            new AuthorizationContext(Collections.emptySet(), Instant.MIN, Collections.emptyMap()));
-                default:
-                    return CompletableFuture.completedFuture(null);
-            }
-        };
+                new MapAuthorizationContextResolver(authorizationContexts)).build();
     }
 
     @Override
