@@ -28,7 +28,7 @@ class ExpiryAuthorizationContextValidator implements AuthorizationContextValidat
     @Override
     public void accept(AuthorizationContext authorizationContext) {
         if (this.clock.instant().isAfter(authorizationContext.getExpiry())) {
-            throw new RuntimeException("The access token expired");
+            throw new BearerTokenException(BearerTokenError.INVALID_TOKEN);
         }
     }
 

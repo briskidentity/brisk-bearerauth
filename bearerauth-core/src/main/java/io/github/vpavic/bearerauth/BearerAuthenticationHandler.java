@@ -44,12 +44,12 @@ public class BearerAuthenticationHandler {
         BearerToken bearerToken = this.bearerTokenExtractor.apply(httpExchange);
         if (bearerToken == null) {
             CompletableFuture<Void> result = new CompletableFuture<>();
-            result.completeExceptionally(new RuntimeException("no bearer token"));
+            result.completeExceptionally(new BearerTokenException(BearerTokenError.INVALID_REQUEST));
             return result;
         }
         return this.authorizationContextResolver.apply(bearerToken).handle((authorizationContext, throwable) -> {
             if (authorizationContext == null) {
-                throw new RuntimeException("no authorization context");
+                throw new BearerTokenException(BearerTokenError.INVALID_TOKEN);
             }
             this.authorizationContextValidator.accept(authorizationContext);
             httpExchange.setAttribute(AUTHORIZATION_CONTEXT_ATTRIBUTE, authorizationContext);
