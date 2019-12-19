@@ -8,10 +8,12 @@ import io.github.vpavic.bearerauth.HttpExchange;
 import io.github.vpavic.bearerauth.MapAuthorizationContextResolver;
 import io.github.vpavic.bearerauth.WwwAuthenticateBuilder;
 
+import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
-import javax.servlet.http.HttpFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -22,7 +24,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 @WebFilter(urlPatterns = "/resource")
-public class ServletBearerAuthenticationFilter extends HttpFilter {
+public class ServletBearerAuthenticationFilter implements Filter {
 
     private final BearerAuthenticationHandler bearerAuthenticationHandler;
 
@@ -37,10 +39,15 @@ public class ServletBearerAuthenticationFilter extends HttpFilter {
     }
 
     @Override
-    protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
-            throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
+            ServletException {
+        if (!(request instanceof HttpServletRequest) || !(response instanceof HttpServletResponse)) {
+            throw new ServletException("ServletBearerAuthenticationFilter only supports HTTP requests");
+        }
+        HttpServletRequest req = (HttpServletRequest) request;
+        HttpServletResponse res = (HttpServletResponse) response;
         try {
-            this.bearerAuthenticationHandler.handle(new ServletHttpExchange(request)).toCompletableFuture().get();
+            this.bearerAuthenticationHandler.handle(new ServletHttpExchange(req)).toCompletableFuture().get();
             chain.doFilter(request, response);
         }
         catch (ExecutionException ex) {
@@ -48,8 +55,8 @@ public class ServletBearerAuthenticationFilter extends HttpFilter {
             if (cause instanceof BearerTokenException) {
                 BearerTokenException bearerTokenException = (BearerTokenException) cause;
                 String wwwAuthenticate = WwwAuthenticateBuilder.from(bearerTokenException).build();
-                response.addHeader("WWW-Authenticate", wwwAuthenticate);
-                response.sendError(bearerTokenException.getStatus());
+                res.addHeader("WWW-Authenticate", wwwAuthenticate);
+                res.sendError(bearerTokenException.getStatus());
             }
             else {
                 throw new ServletException(ex);
