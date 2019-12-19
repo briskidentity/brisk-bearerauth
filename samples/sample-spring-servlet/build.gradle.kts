@@ -7,7 +7,7 @@ plugins {
 dependencies {
     implementation(platform(SpringBootPlugin.BOM_COORDINATES))
 
-    implementation(project(":bearerauth-core"))
+    implementation(project(":bearerauth-servlet"))
     implementation("org.springframework.boot:spring-boot-starter-web")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")

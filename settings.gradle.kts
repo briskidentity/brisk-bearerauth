@@ -15,6 +15,7 @@ pluginManagement {
 rootProject.name = "bearerauth"
 
 include("bearerauth-core")
+include("bearerauth-servlet")
 include("samples:sample-micronaut")
 include("samples:sample-spring-servlet")
 include("samples:sample-spring-webflux")
