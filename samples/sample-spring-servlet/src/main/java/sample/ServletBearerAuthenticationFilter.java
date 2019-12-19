@@ -3,8 +3,10 @@ package sample;
 import io.github.vpavic.bearerauth.AuthorizationContext;
 import io.github.vpavic.bearerauth.BearerAuthenticationHandler;
 import io.github.vpavic.bearerauth.BearerToken;
+import io.github.vpavic.bearerauth.BearerTokenException;
 import io.github.vpavic.bearerauth.HttpExchange;
 import io.github.vpavic.bearerauth.MapAuthorizationContextResolver;
+import io.github.vpavic.bearerauth.WwwAuthenticateBuilder;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -39,11 +41,23 @@ public class ServletBearerAuthenticationFilter extends HttpFilter {
             throws IOException, ServletException {
         try {
             this.bearerAuthenticationHandler.handle(new ServletHttpExchange(request)).toCompletableFuture().get();
+            chain.doFilter(request, response);
         }
-        catch (ExecutionException | InterruptedException ex) {
+        catch (ExecutionException ex) {
+            Throwable cause = ex.getCause();
+            if (cause instanceof BearerTokenException) {
+                BearerTokenException bearerTokenException = (BearerTokenException) cause;
+                String wwwAuthenticate = WwwAuthenticateBuilder.from(bearerTokenException).build();
+                response.addHeader("WWW-Authenticate", wwwAuthenticate);
+                response.sendError(bearerTokenException.getStatus());
+            }
+            else {
+                throw new ServletException(ex);
+            }
+        }
+        catch (InterruptedException ex) {
             throw new ServletException(ex);
         }
-        chain.doFilter(request, response);
     }
 
     private static class ServletHttpExchange implements HttpExchange {

@@ -44,7 +44,7 @@ public class BearerAuthenticationHandler {
         BearerToken bearerToken = this.bearerTokenExtractor.apply(httpExchange);
         if (bearerToken == null) {
             CompletableFuture<Void> result = new CompletableFuture<>();
-            result.completeExceptionally(new BearerTokenException(BearerTokenError.INVALID_REQUEST));
+            result.completeExceptionally(new BearerTokenException());
             return result;
         }
         return this.authorizationContextResolver.apply(bearerToken).handle((authorizationContext, throwable) -> {
