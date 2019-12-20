@@ -1,39 +1,26 @@
-package sample;
+package io.github.vpavic.bearerauth.spring.webflux;
 
-import io.github.vpavic.bearerauth.AuthorizationContext;
 import io.github.vpavic.bearerauth.BearerAuthenticationHandler;
-import io.github.vpavic.bearerauth.BearerToken;
 import io.github.vpavic.bearerauth.BearerTokenException;
 import io.github.vpavic.bearerauth.HttpExchange;
-import io.github.vpavic.bearerauth.MapAuthorizationContextResolver;
 import io.github.vpavic.bearerauth.WwwAuthenticateBuilder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpResponse;
-import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
-import java.time.Instant;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Objects;
 
-@Component
 public class WebFluxBearerAuthenticationFilter implements WebFilter {
 
     private final BearerAuthenticationHandler bearerAuthenticationHandler;
 
-    public WebFluxBearerAuthenticationFilter() {
-        Map<BearerToken, AuthorizationContext> authorizationContexts = new HashMap<>();
-        authorizationContexts.put(new BearerToken("valid"),
-                new AuthorizationContext(Collections.emptySet(), Instant.MAX, Collections.emptyMap()));
-        authorizationContexts.put(new BearerToken("expired"),
-                new AuthorizationContext(Collections.emptySet(), Instant.MIN, Collections.emptyMap()));
-        this.bearerAuthenticationHandler = BearerAuthenticationHandler.builder(
-                new MapAuthorizationContextResolver(authorizationContexts)).build();
+    public WebFluxBearerAuthenticationFilter(BearerAuthenticationHandler bearerAuthenticationHandler) {
+        Objects.requireNonNull(bearerAuthenticationHandler, "bearerAuthenticationHandler must not be null");
+        this.bearerAuthenticationHandler = bearerAuthenticationHandler;
     }
 
     @Override
