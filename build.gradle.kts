@@ -3,17 +3,19 @@ plugins {
     id("com.github.ben-manes.versions")
 }
 
-group = "io.github.vpavic.bearerauth"
+allprojects {
+    group = "io.github.vpavic.bearerauth"
+
+    repositories {
+        mavenCentral()
+    }
+}
 
 subprojects {
     apply<JavaPlugin>()
 
     configure<JavaPluginConvention> {
         sourceCompatibility = JavaVersion.VERSION_1_8
-    }
-
-    repositories {
-        mavenCentral()
     }
 
     tasks.withType<Test> {

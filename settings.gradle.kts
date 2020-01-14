@@ -17,6 +17,7 @@ rootProject.name = "bearerauth"
 include("bearerauth-core")
 include("bearerauth-servlet")
 include("bearerauth-spring-webflux")
-include("samples:sample-micronaut")
-include("samples:sample-spring-servlet")
-include("samples:sample-spring-webflux")
+
+file("$rootDir/samples").listFiles { f -> f.isDirectory }?.forEach {
+    include("samples:${it.name}")
+}
