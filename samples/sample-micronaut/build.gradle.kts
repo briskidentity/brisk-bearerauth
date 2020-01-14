@@ -4,7 +4,7 @@ plugins {
 
 dependencies {
     arrayOf("annotationProcessor", "implementation", "testAnnotationProcessor").forEach {
-        add(it, platform("io.micronaut:micronaut-bom:1.2.8"))
+        add(it, platform("io.micronaut:micronaut-bom:1.2.9"))
     }
     annotationProcessor("io.micronaut:micronaut-inject-java")
     implementation(project(":bearerauth-core"))
