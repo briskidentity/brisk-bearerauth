@@ -1,14 +1,15 @@
 package io.github.vpavic.bearerauth;
 
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
 /**
- *
+ * Representation of authorization context attached to a {@link BearerToken}.
  */
-public class AuthorizationContext {
+public class AuthorizationContext implements Serializable {
 
     private final Set<String> scope;
 
@@ -28,6 +29,7 @@ public class AuthorizationContext {
     }
 
     /**
+     * Get the authorization context scope.
      * @return the scope
      */
     public Set<String> getScope() {
@@ -35,6 +37,7 @@ public class AuthorizationContext {
     }
 
     /**
+     * Get the authorization context expiry.
      * @return the expiry
      */
     public Instant getExpiry() {
@@ -42,6 +45,7 @@ public class AuthorizationContext {
     }
 
     /**
+     * Get the authorization context attributes.
      * @return the attributes
      */
     public Map<String, Object> getAttributes() {
@@ -49,9 +53,10 @@ public class AuthorizationContext {
     }
 
     /**
-     * @param name
-     * @param <T>
-     * @return
+     * Get the authorization context attribute by name.
+     * @param name the attribute name
+     * @param <T> the attribute type
+     * @return the attribute value
      */
     public <T> T getAttribute(String name) {
         @SuppressWarnings("unchecked")
