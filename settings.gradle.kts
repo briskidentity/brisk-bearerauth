@@ -11,6 +11,6 @@ include("bearerauth-core")
 include("bearerauth-servlet")
 include("bearerauth-spring-webflux")
 
-file("$rootDir/samples").listFiles { f -> f.isDirectory and f.name.startsWith("sample-") }?.forEach {
-    include("samples:${it.name}")
+file("$rootDir/bearerauth-tests").listFiles { f -> f.isDirectory and f.name.startsWith("bearerauth-test-") }?.forEach {
+    include("bearerauth-tests:${it.name}")
 }

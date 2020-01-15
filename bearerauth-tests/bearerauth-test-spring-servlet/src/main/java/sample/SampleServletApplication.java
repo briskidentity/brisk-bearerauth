@@ -23,7 +23,7 @@ public class SampleServletApplication {
     }
 
     @Bean
-    public FilterRegistrationBean<ServletBearerAuthenticationFilter> servletBearerAuthenticationFilter() {
+    public FilterRegistrationBean<ServletBearerAuthenticationFilter> bearerAuthenticationFilter() {
         Map<BearerToken, AuthorizationContext> authorizationContexts = new HashMap<>();
         authorizationContexts.put(new BearerToken("valid"),
                 new AuthorizationContext(Collections.emptySet(), Instant.MAX, Collections.emptyMap()));
