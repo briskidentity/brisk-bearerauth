@@ -1,5 +1,6 @@
 plugins {
     `java-library`
+    id("io.github.vpavic.bearerauth.conventions")
 }
 
 dependencies {

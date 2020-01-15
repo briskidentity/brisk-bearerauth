@@ -10,15 +10,3 @@ allprojects {
         mavenCentral()
     }
 }
-
-subprojects {
-    apply<JavaPlugin>()
-
-    configure<JavaPluginConvention> {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-    }
-
-    tasks.withType<Test> {
-        useJUnitPlatform()
-    }
-}
