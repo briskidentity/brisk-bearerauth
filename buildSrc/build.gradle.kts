@@ -5,8 +5,8 @@ plugins {
 gradlePlugin {
     plugins {
         create("conventionsPlugin") {
-            id = "io.github.vpavic.bearerauth.conventions"
-            implementationClass = "io.github.vpavic.bearerauth.build.ConventionsPlugin"
+            id = "org.briskidentity.bearerauth.conventions"
+            implementationClass = "org.briskidentity.bearerauth.build.ConventionsPlugin"
         }
     }
 }

@@ -1,7 +1,7 @@
 package sample;
 
-import io.github.vpavic.bearerauth.AuthorizationContext;
-import io.github.vpavic.bearerauth.BearerAuthenticationHandler;
+import org.briskidentity.bearerauth.AuthorizationContext;
+import org.briskidentity.bearerauth.BearerAuthenticationHandler;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -9,8 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.StringJoiner;
-import java.util.stream.Collectors;
 
 @WebServlet(urlPatterns = "/resource")
 public class TestServlet extends HttpServlet {

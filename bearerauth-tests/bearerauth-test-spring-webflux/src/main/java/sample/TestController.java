@@ -1,7 +1,7 @@
 package sample;
 
-import io.github.vpavic.bearerauth.AuthorizationContext;
-import io.github.vpavic.bearerauth.BearerAuthenticationHandler;
+import org.briskidentity.bearerauth.AuthorizationContext;
+import org.briskidentity.bearerauth.BearerAuthenticationHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

@@ -1,6 +1,6 @@
 plugins {
     `java-library`
-    id("io.github.vpavic.bearerauth.conventions")
+    id("org.briskidentity.bearerauth.conventions")
 }
 
 dependencies {

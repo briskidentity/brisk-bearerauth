@@ -4,7 +4,7 @@ plugins {
 }
 
 allprojects {
-    group = "io.github.vpavic.bearerauth"
+    group = "org.briskidentity.bearerauth"
 
     repositories {
         mavenCentral()
