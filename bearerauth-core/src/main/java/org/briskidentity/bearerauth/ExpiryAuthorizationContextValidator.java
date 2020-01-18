@@ -26,7 +26,7 @@ class ExpiryAuthorizationContextValidator implements AuthorizationContextValidat
     }
 
     @Override
-    public void accept(AuthorizationContext authorizationContext) {
+    public void accept(HttpExchange httpExchange, AuthorizationContext authorizationContext) {
         if (this.clock.instant().isAfter(authorizationContext.getExpiry())) {
             throw new BearerTokenException(BearerTokenError.INVALID_TOKEN);
         }

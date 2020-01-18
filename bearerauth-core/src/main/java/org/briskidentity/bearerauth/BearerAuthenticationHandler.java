@@ -51,7 +51,7 @@ public class BearerAuthenticationHandler {
             if (authorizationContext == null) {
                 throw new BearerTokenException(BearerTokenError.INVALID_TOKEN);
             }
-            this.authorizationContextValidator.accept(authorizationContext);
+            this.authorizationContextValidator.accept(httpExchange, authorizationContext);
             httpExchange.setAttribute(AUTHORIZATION_CONTEXT_ATTRIBUTE, authorizationContext);
             return null;
         });
