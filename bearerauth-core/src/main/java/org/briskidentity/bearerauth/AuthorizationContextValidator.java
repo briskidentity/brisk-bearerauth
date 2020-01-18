@@ -1,5 +1,7 @@
 package org.briskidentity.bearerauth;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.BiConsumer;
 
 /**
@@ -12,6 +14,10 @@ public interface AuthorizationContextValidator extends BiConsumer<HttpExchange, 
 
     static AuthorizationContextValidator expiry() {
         return new ExpiryAuthorizationContextValidator();
+    }
+
+    static AuthorizationContextValidator composite(AuthorizationContextValidator... validators) {
+        return new CompositeAuthorizationContextValidator(Arrays.asList(validators));
     }
 
 }
