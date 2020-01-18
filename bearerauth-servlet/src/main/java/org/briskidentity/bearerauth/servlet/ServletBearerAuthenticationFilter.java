@@ -39,15 +39,13 @@ public class ServletBearerAuthenticationFilter implements Filter {
         }
         catch (ExecutionException ex) {
             Throwable cause = ex.getCause();
-            if (cause instanceof BearerTokenException) {
-                BearerTokenException bearerTokenException = (BearerTokenException) cause;
-                String wwwAuthenticate = WwwAuthenticateBuilder.from(bearerTokenException).build();
-                res.addHeader("WWW-Authenticate", wwwAuthenticate);
-                res.sendError(bearerTokenException.getStatus());
-            }
-            else {
+            if (!(cause instanceof BearerTokenException)) {
                 throw new ServletException(ex);
             }
+            BearerTokenException bearerTokenException = (BearerTokenException) cause;
+            String wwwAuthenticate = WwwAuthenticateBuilder.from(bearerTokenException).build();
+            res.addHeader("WWW-Authenticate", wwwAuthenticate);
+            res.sendError(bearerTokenException.getStatus());
         }
         catch (InterruptedException ex) {
             throw new ServletException(ex);
