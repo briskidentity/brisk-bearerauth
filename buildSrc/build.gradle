@@ -2,6 +2,8 @@ plugins {
     id 'java-gradle-plugin'
 }
 
+sourceCompatibility = 1.8
+
 gradlePlugin {
     plugins {
         conventionsPlugin {
@@ -9,4 +11,8 @@ gradlePlugin {
             implementationClass = 'org.briskidentity.bearerauth.build.ConventionsPlugin'
         }
     }
+}
+
+test {
+    useJUnitPlatform()
 }
