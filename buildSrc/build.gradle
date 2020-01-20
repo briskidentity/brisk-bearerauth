@@ -1,0 +1,12 @@
+plugins {
+    id 'java-gradle-plugin'
+}
+
+gradlePlugin {
+    plugins {
+        conventionsPlugin {
+            id = 'org.briskidentity.bearerauth.conventions'
+            implementationClass = 'org.briskidentity.bearerauth.build.ConventionsPlugin'
+        }
+    }
+}
