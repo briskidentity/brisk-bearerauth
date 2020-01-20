@@ -49,6 +49,16 @@ public class MicronautBearerAuthenticationFilter extends OncePerRequestHttpServe
         }
 
         @Override
+        public String getRequestMethod() {
+            return this.httpRequest.getMethod().name();
+        }
+
+        @Override
+        public String getRequestPath() {
+            return this.httpRequest.getPath();
+        }
+
+        @Override
         public String getRequestHeader(String headerName) {
             return this.httpRequest.getHeaders().get(headerName);
         }

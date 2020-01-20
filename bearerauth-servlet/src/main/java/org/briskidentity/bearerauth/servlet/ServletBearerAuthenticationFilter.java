@@ -61,6 +61,16 @@ public class ServletBearerAuthenticationFilter implements Filter {
         }
 
         @Override
+        public String getRequestMethod() {
+            return this.httpServletRequest.getMethod();
+        }
+
+        @Override
+        public String getRequestPath() {
+            return this.httpServletRequest.getRequestURI();
+        }
+
+        @Override
         public String getRequestHeader(String headerName) {
             return this.httpServletRequest.getHeader(headerName);
         }

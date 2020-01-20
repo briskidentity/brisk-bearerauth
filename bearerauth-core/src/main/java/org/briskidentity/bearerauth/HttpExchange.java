@@ -13,6 +13,18 @@ public interface HttpExchange {
     String getRequestHeader(String headerName);
 
     /**
+     * Get the HTTP request method.
+     * @return the request method
+     */
+    String getRequestMethod();
+
+    /**
+     * Get the HTTP request path.
+     * @return the request path
+     */
+    String getRequestPath();
+
+    /**
      * Set the HTTP exchange attribute.
      * @param attributeName  the attribute name
      * @param attributeValue the attribute value
