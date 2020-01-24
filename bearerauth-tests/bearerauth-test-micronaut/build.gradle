@@ -2,18 +2,22 @@ plugins {
     id 'application'
 }
 
+ext {
+    micronautVersion = '1.2.10'
+}
+
 dependencies {
-    annotationProcessor platform('io.micronaut:micronaut-bom:1.2.9')
+    annotationProcessor platform("io.micronaut:micronaut-bom:$micronautVersion")
     annotationProcessor 'io.micronaut:micronaut-inject-java'
 
-    implementation platform('io.micronaut:micronaut-bom:1.2.9')
+    implementation platform("io.micronaut:micronaut-bom:$micronautVersion")
     implementation project(':bearerauth-core')
     implementation 'io.micronaut:micronaut-http-server-netty'
     implementation 'io.micronaut:micronaut-inject'
 
     runtimeOnly 'ch.qos.logback:logback-classic:1.2.3'
 
-    testAnnotationProcessor platform('io.micronaut:micronaut-bom:1.2.9')
+    testAnnotationProcessor platform("io.micronaut:micronaut-bom:$micronautVersion")
     testAnnotationProcessor 'io.micronaut:micronaut-inject-java'
 
     testImplementation 'io.micronaut.test:micronaut-test-junit5'
