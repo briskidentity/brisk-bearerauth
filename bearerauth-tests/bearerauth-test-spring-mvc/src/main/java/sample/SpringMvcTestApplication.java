@@ -9,6 +9,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.WebRequest;
 
 import java.time.Instant;
 import java.util.Collections;
@@ -16,10 +20,20 @@ import java.util.HashMap;
 import java.util.Map;
 
 @SpringBootApplication
-public class SpringServletTestApplication {
+@RestController
+public class SpringMvcTestApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(SpringServletTestApplication.class, args);
+        SpringApplication.run(SpringMvcTestApplication.class, args);
+    }
+
+    @GetMapping(path = "/resource")
+    public String greet(WebRequest webRequest) {
+        AuthorizationContext authorizationContext = (AuthorizationContext) webRequest.getAttribute(
+                BearerAuthenticationHandler.AUTHORIZATION_CONTEXT_ATTRIBUTE, RequestAttributes.SCOPE_REQUEST);
+        System.out.println("authorizationContext{scope=" + String.join(",", authorizationContext.getScope())
+                + ",expiry=" + authorizationContext.getExpiry() + "}");
+        return "Hello World!";
     }
 
     @Bean
