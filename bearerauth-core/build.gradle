@@ -5,8 +5,7 @@ plugins {
 }
 
 dependencies {
-    testImplementation platform("org.junit:junit-bom:$jUnitVersion")
-    testImplementation 'org.assertj:assertj-core:3.14.0'
+    testImplementation 'org.assertj:assertj-core'
     testImplementation 'org.junit.jupiter:junit-jupiter-api'
 
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'

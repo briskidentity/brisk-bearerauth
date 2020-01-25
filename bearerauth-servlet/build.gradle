@@ -6,10 +6,9 @@ plugins {
 
 dependencies {
     api project(':bearerauth-core')
-    api 'jakarta.servlet:jakarta.servlet-api:4.0.3'
+    api 'jakarta.servlet:jakarta.servlet-api'
 
-    testImplementation platform("org.junit:junit-bom:$jUnitVersion")
-    testImplementation 'org.assertj:assertj-core:3.14.0'
+    testImplementation 'org.assertj:assertj-core'
     testImplementation 'org.junit.jupiter:junit-jupiter-api'
 
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'

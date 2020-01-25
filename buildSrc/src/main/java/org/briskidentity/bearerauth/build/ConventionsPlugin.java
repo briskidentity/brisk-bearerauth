@@ -11,6 +11,8 @@ import org.gradle.api.publish.maven.MavenPublication;
 import org.gradle.api.publish.maven.plugins.MavenPublishPlugin;
 import org.gradle.api.tasks.testing.Test;
 
+import java.io.File;
+
 public class ConventionsPlugin implements Plugin<Project> {
 
     @Override
@@ -23,6 +25,7 @@ public class ConventionsPlugin implements Plugin<Project> {
         project.getPlugins().withType(JavaPlugin.class, javaPlugin -> {
             JavaPluginExtension javaPluginExtension = project.getExtensions().getByType(JavaPluginExtension.class);
             javaPluginExtension.setSourceCompatibility(JavaVersion.VERSION_1_8);
+            project.apply(action -> action.from(new File(project.getRootDir(), "gradle/dependency-management.gradle")));
             project.getTasks().withType(Test.class, test -> {
                 test.useJUnitPlatform();
                 test.setMaxHeapSize("1g");

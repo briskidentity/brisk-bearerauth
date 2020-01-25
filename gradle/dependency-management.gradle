@@ -1,0 +1,9 @@
+dependencies {
+    implementation platform('org.springframework:spring-framework-bom:5.1.12.RELEASE')
+    testImplementation platform('org.junit:junit-bom:5.6.0')
+
+    constraints {
+        api 'jakarta.servlet:jakarta.servlet-api:4.0.3'
+        testImplementation 'org.assertj:assertj-core:3.14.0'
+    }
+}
