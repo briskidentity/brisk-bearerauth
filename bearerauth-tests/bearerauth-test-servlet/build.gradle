@@ -1,0 +1,8 @@
+plugins {
+    id 'application'
+}
+
+dependencies {
+    implementation project(':bearerauth-servlet')
+    implementation 'org.eclipse.jetty:jetty-servlet:9.4.26.v20200117'
+}
