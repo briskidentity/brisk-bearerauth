@@ -5,7 +5,7 @@ plugins {
 }
 
 dependencies {
-    api project(':bearerauth-core')
+    api project(':brisk-bearerauth-core')
     api 'org.springframework:spring-webflux'
 
     testImplementation 'org.assertj:assertj-core'

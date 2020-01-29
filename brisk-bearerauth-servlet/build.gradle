@@ -5,7 +5,7 @@ plugins {
 }
 
 dependencies {
-    api project(':bearerauth-core')
+    api project(':brisk-bearerauth-core')
     api 'jakarta.servlet:jakarta.servlet-api'
 
     testImplementation 'org.assertj:assertj-core'

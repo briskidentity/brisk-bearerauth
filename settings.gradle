@@ -5,12 +5,12 @@ pluginManagement {
     }
 }
 
-rootProject.name = 'bearerauth'
+rootProject.name = 'brisk-bearerauth'
 
-include 'bearerauth-core'
-include 'bearerauth-servlet'
-include 'bearerauth-spring-webflux'
+include 'brisk-bearerauth-core'
+include 'brisk-bearerauth-servlet'
+include 'brisk-bearerauth-spring-webflux'
 
-file("$rootDir/bearerauth-tests").eachDirMatch(~/bearerauth-test-.*/) {
-    include "bearerauth-tests:$it.name"
+file("$rootDir/brisk-bearerauth-tests").eachDirMatch(~/brisk-bearerauth-test-.*/) {
+    include "brisk-bearerauth-tests:$it.name"
 }
