@@ -29,7 +29,7 @@ public class SpringWebFluxTestApplication {
     public String greet(ServerWebExchange exchange) {
         AuthorizationContext authorizationContext = exchange.getAttribute(
                 BearerAuthenticationHandler.AUTHORIZATION_CONTEXT_ATTRIBUTE);
-        System.out.println("authorizationContext{scope=" + String.join(",", authorizationContext.getScope())
+        System.out.println("authorizationContext{scope=" + String.join(",", authorizationContext.getScopeValues())
                 + ",expiry=" + authorizationContext.getExpiry() + "}");
         return "Hello World!";
     }

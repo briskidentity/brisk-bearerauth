@@ -11,29 +11,29 @@ import java.util.Set;
  */
 public class AuthorizationContext implements Serializable {
 
-    private final Set<String> scope;
+    private final Set<String> scopeValues;
 
     private final Instant expiry;
 
     private final Map<String, Object> attributes;
 
     /**
-     * @param scope the scope
+     * @param scopeValues the scope values
      * @param expiry the expiry
      * @param attributes the attributes
      */
-    public AuthorizationContext(Set<String> scope, Instant expiry, Map<String, Object> attributes) {
-        this.scope = Collections.unmodifiableSet(scope);
+    public AuthorizationContext(Set<String> scopeValues, Instant expiry, Map<String, Object> attributes) {
+        this.scopeValues = Collections.unmodifiableSet(scopeValues);
         this.expiry = expiry;
         this.attributes = Collections.unmodifiableMap(attributes);
     }
 
     /**
-     * Get the authorization context scope.
-     * @return the scope
+     * Get the authorization context scope values.
+     * @return the scope values
      */
-    public Set<String> getScope() {
-        return this.scope;
+    public Set<String> getScopeValues() {
+        return this.scopeValues;
     }
 
     /**

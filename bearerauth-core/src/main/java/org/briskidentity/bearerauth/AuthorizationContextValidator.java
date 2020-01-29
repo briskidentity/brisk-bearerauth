@@ -16,6 +16,10 @@ public interface AuthorizationContextValidator extends BiConsumer<HttpExchange, 
         return new ExpiryAuthorizationContextValidator();
     }
 
+    static AuthorizationContextValidator scope(List<ScopeMapping> scopeMappings) {
+        return new ScopeAuthorizationContextValidator(scopeMappings);
+    }
+
     static AuthorizationContextValidator composite(AuthorizationContextValidator... validators) {
         return new CompositeAuthorizationContextValidator(Arrays.asList(validators));
     }

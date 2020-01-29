@@ -53,7 +53,7 @@ public class ServletTestApplication {
         protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
             AuthorizationContext authorizationContext = (AuthorizationContext) req.getAttribute(
                     BearerAuthenticationHandler.AUTHORIZATION_CONTEXT_ATTRIBUTE);
-            System.out.println("authorizationContext{scope=" + String.join(",", authorizationContext.getScope())
+            System.out.println("authorizationContext{scope=" + String.join(",", authorizationContext.getScopeValues())
                     + ",expiry=" + authorizationContext.getExpiry() + "}");
             byte[] content = "Hello World!".getBytes(StandardCharsets.UTF_8);
             resp.setContentType("text/plain");

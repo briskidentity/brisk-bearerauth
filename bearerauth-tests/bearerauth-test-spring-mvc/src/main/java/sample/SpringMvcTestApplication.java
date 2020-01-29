@@ -1,9 +1,12 @@
 package sample;
 
 import org.briskidentity.bearerauth.AuthorizationContext;
+import org.briskidentity.bearerauth.AuthorizationContextResolver;
+import org.briskidentity.bearerauth.AuthorizationContextValidator;
 import org.briskidentity.bearerauth.BearerAuthenticationHandler;
 import org.briskidentity.bearerauth.BearerToken;
 import org.briskidentity.bearerauth.MapAuthorizationContextResolver;
+import org.briskidentity.bearerauth.ScopeMapping;
 import org.briskidentity.bearerauth.servlet.ServletBearerAuthenticationFilter;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -15,8 +18,10 @@ import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.WebRequest;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @SpringBootApplication
@@ -31,7 +36,7 @@ public class SpringMvcTestApplication {
     public String greet(WebRequest webRequest) {
         AuthorizationContext authorizationContext = (AuthorizationContext) webRequest.getAttribute(
                 BearerAuthenticationHandler.AUTHORIZATION_CONTEXT_ATTRIBUTE, RequestAttributes.SCOPE_REQUEST);
-        System.out.println("authorizationContext{scope=" + String.join(",", authorizationContext.getScope())
+        System.out.println("authorizationContext{scope=" + String.join(",", authorizationContext.getScopeValues())
                 + ",expiry=" + authorizationContext.getExpiry() + "}");
         return "Hello World!";
     }
@@ -39,12 +44,20 @@ public class SpringMvcTestApplication {
     @Bean
     public FilterRegistrationBean<ServletBearerAuthenticationFilter> bearerAuthenticationFilter() {
         Map<BearerToken, AuthorizationContext> authorizationContexts = new HashMap<>();
-        authorizationContexts.put(new BearerToken("valid"),
+        authorizationContexts.put(new BearerToken("valid_token"),
+                new AuthorizationContext(Collections.singleton("scope:read"), Instant.MAX, Collections.emptyMap()));
+        authorizationContexts.put(new BearerToken("token_expired"),
+                new AuthorizationContext(Collections.singleton("scope:read"), Instant.MIN, Collections.emptyMap()));
+        authorizationContexts.put(new BearerToken("insufficient_scope"),
                 new AuthorizationContext(Collections.emptySet(), Instant.MAX, Collections.emptyMap()));
-        authorizationContexts.put(new BearerToken("expired"),
-                new AuthorizationContext(Collections.emptySet(), Instant.MIN, Collections.emptyMap()));
+        AuthorizationContextResolver authorizationContextResolver =
+                new MapAuthorizationContextResolver(authorizationContexts);
+        List<ScopeMapping> scopeMappings = new ArrayList<>();
+        scopeMappings.add(new ScopeMapping("/resource", "GET", Collections.singleton("scope:read")));
+        AuthorizationContextValidator authorizationContextValidator = AuthorizationContextValidator.composite(
+                AuthorizationContextValidator.expiry(), AuthorizationContextValidator.scope(scopeMappings));
         BearerAuthenticationHandler bearerAuthenticationHandler = BearerAuthenticationHandler.builder(
-                new MapAuthorizationContextResolver(authorizationContexts)).build();
+                authorizationContextResolver).authorizationContextValidator(authorizationContextValidator).build();
         FilterRegistrationBean<ServletBearerAuthenticationFilter> servletBearerAuthenticationFilter =
                 new FilterRegistrationBean<>(new ServletBearerAuthenticationFilter(bearerAuthenticationHandler));
         servletBearerAuthenticationFilter.setUrlPatterns(Collections.singleton("/resource"));

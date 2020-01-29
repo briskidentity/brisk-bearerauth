@@ -69,12 +69,14 @@ public class BearerAuthenticationHandler {
             this.authorizationContextResolver = authorizationContextResolver;
         }
 
-        public void bearerTokenExtractor(BearerTokenExtractor bearerTokenExtractor) {
+        public Builder bearerTokenExtractor(BearerTokenExtractor bearerTokenExtractor) {
             this.bearerTokenExtractor = bearerTokenExtractor;
+            return this;
         }
 
-        public void authorizationContextValidator(AuthorizationContextValidator authorizationContextValidator) {
+        public Builder authorizationContextValidator(AuthorizationContextValidator authorizationContextValidator) {
             this.authorizationContextValidator = authorizationContextValidator;
+            return this;
         }
 
         public BearerAuthenticationHandler build() {

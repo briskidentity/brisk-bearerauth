@@ -14,7 +14,7 @@ public class TestController {
     public String greet(HttpRequest<?> request) {
         request.getAttribute(BearerAuthenticationHandler.AUTHORIZATION_CONTEXT_ATTRIBUTE, AuthorizationContext.class)
                 .ifPresent(authorizationContext -> System.out.println("authorizationContext{scope="
-                        + String.join(",", authorizationContext.getScope()) + ",expiry="
+                        + String.join(",", authorizationContext.getScopeValues()) + ",expiry="
                         + authorizationContext.getExpiry() + "}"));
         return "Hello World!";
     }
