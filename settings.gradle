@@ -9,7 +9,7 @@ rootProject.name = 'brisk-bearerauth'
 
 include 'brisk-bearerauth-core'
 include 'brisk-bearerauth-servlet'
-include 'brisk-bearerauth-spring-webflux'
+include 'brisk-bearerauth-spring'
 
 file("$rootDir/brisk-bearerauth-tests").eachDirMatch(~/brisk-bearerauth-test-.*/) {
     include "brisk-bearerauth-tests:$it.name"

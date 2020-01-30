@@ -1,0 +1,29 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+    id 'org.briskidentity.bearerauth.conventions'
+}
+
+java {
+    registerFeature('webFluxSupport') {
+        usingSourceSet(sourceSets.main)
+    }
+    registerFeature('webMvcSupport') {
+        usingSourceSet(sourceSets.main)
+    }
+}
+
+dependencies {
+    api project(':brisk-bearerauth-core')
+
+    webFluxSupportApi project(':brisk-bearerauth-core')
+    webFluxSupportApi 'org.springframework:spring-webflux'
+
+    webMvcSupportApi project(':brisk-bearerauth-servlet')
+    webMvcSupportApi 'org.springframework:spring-webmvc'
+
+    testImplementation 'org.assertj:assertj-core'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api'
+
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+}

@@ -8,7 +8,11 @@ plugins {
 dependencies {
     implementation platform(SpringBootPlugin.BOM_COORDINATES)
 
-    implementation project(':brisk-bearerauth-servlet')
+    implementation(project(':brisk-bearerauth-spring')) {
+        capabilities {
+            requireCapability('org.briskidentity.bearerauth:brisk-bearerauth-spring-web-mvc-support')
+        }
+    }
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
