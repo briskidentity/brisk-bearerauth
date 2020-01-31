@@ -6,7 +6,8 @@ plugins {
 
 dependencies {
     api project(':brisk-bearerauth-core')
-    api 'jakarta.servlet:jakarta.servlet-api'
+
+    compileOnly 'jakarta.servlet:jakarta.servlet-api'
 
     testImplementation platform('org.junit:junit-bom')
     testImplementation 'org.assertj:assertj-core'
