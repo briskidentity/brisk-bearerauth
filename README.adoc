@@ -1,1 +1,46 @@
-= Bearer Token Authentication
+= Brisk BearerAuth image:https://travis-ci.com/vpavic/brisk-bearerauth.svg?branch=master["Build Status", link="https://travis-ci.com/vpavic/brisk-bearerauth"]
+
+Brisk BearerAuth is a simple bearer token authentication framework for Java.
+
+Primary goals of this framework are:
+
+* to implement the https://tools.ietf.org/html/rfc6750[RFC 6750] with focus on its best practices
+* to be simple and easy to understand by promoting RFC's domain language in the codebase
+* to be agnostic of any particular web framework at its core but easy to integrate with any stack
+
+== Modules
+
+The framework consists of several modules.
+
+=== brisk-bearerauth-core
+
+This module provides the core functionality of Brisk BearerAuth.
+
+=== brisk-bearerauth-servlet
+
+This module provides integration with Servlet API.
+
+=== brisk-bearerauth-spring
+
+This module provides integration with Spring Framework, including both Spring MVC and Spring WebFlux.
+
+== Building from source
+
+The project can be built using https://docs.gradle.org/current/userguide/gradle_wrapper.html[Gradle Wrapper], which will download the correct Gradle version.
+JDK 8 is required.
+
+To verify and build the entire project, use Gradle's `build` task:
+
+----
+$ ./gradlew build
+----
+
+To build and publish all the artifacts to local Maven cache, use Gradle's `publishToMavenLocal` task:
+
+----
+$ ./gradlew publishToMavenLocal
+----
+
+== License
+
+Brisk BearerAuth is open-source software released under the https://www.apache.org/licenses/LICENSE-2.0.html[Apache 2.0 license].
