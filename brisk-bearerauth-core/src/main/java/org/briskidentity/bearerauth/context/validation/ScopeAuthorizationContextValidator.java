@@ -1,4 +1,9 @@
-package org.briskidentity.bearerauth;
+package org.briskidentity.bearerauth.context.validation;
+
+import org.briskidentity.bearerauth.context.AuthorizationContext;
+import org.briskidentity.bearerauth.http.HttpExchange;
+import org.briskidentity.bearerauth.token.error.BearerTokenError;
+import org.briskidentity.bearerauth.token.error.BearerTokenException;
 
 import java.util.Collections;
 import java.util.List;

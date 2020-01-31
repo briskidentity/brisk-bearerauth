@@ -1,10 +1,10 @@
 package sample;
 
-import org.briskidentity.bearerauth.AuthorizationContext;
 import org.briskidentity.bearerauth.BearerAuthenticationHandler;
-import org.briskidentity.bearerauth.BearerToken;
-import org.briskidentity.bearerauth.MapAuthorizationContextResolver;
+import org.briskidentity.bearerauth.context.AuthorizationContext;
+import org.briskidentity.bearerauth.context.MapAuthorizationContextResolver;
 import org.briskidentity.bearerauth.spring.webflux.WebFluxBearerAuthenticationFilter;
+import org.briskidentity.bearerauth.token.BearerToken;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;

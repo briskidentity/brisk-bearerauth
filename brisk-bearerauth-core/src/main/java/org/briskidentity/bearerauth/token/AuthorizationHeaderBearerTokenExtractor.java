@@ -1,4 +1,6 @@
-package org.briskidentity.bearerauth;
+package org.briskidentity.bearerauth.token;
+
+import org.briskidentity.bearerauth.http.HttpExchange;
 
 import java.util.Objects;
 import java.util.regex.Matcher;

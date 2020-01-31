@@ -1,4 +1,7 @@
-package org.briskidentity.bearerauth;
+package org.briskidentity.bearerauth.http;
+
+import org.briskidentity.bearerauth.token.error.BearerTokenError;
+import org.briskidentity.bearerauth.token.error.BearerTokenException;
 
 import java.util.ArrayList;
 import java.util.List;

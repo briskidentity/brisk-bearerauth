@@ -1,4 +1,4 @@
-package org.briskidentity.bearerauth;
+package org.briskidentity.bearerauth.context.validation;
 
 import java.util.Objects;
 import java.util.Set;

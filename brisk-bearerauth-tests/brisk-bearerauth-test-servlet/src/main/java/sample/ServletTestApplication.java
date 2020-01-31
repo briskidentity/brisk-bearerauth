@@ -1,10 +1,10 @@
 package sample;
 
-import org.briskidentity.bearerauth.AuthorizationContext;
 import org.briskidentity.bearerauth.BearerAuthenticationHandler;
-import org.briskidentity.bearerauth.BearerToken;
-import org.briskidentity.bearerauth.MapAuthorizationContextResolver;
+import org.briskidentity.bearerauth.context.AuthorizationContext;
+import org.briskidentity.bearerauth.context.MapAuthorizationContextResolver;
 import org.briskidentity.bearerauth.servlet.ServletBearerAuthenticationFilter;
+import org.briskidentity.bearerauth.token.BearerToken;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;

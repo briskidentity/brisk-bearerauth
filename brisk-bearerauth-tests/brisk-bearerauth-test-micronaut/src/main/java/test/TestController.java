@@ -4,8 +4,8 @@ import io.micronaut.http.HttpRequest;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
-import org.briskidentity.bearerauth.AuthorizationContext;
 import org.briskidentity.bearerauth.BearerAuthenticationHandler;
+import org.briskidentity.bearerauth.context.AuthorizationContext;
 
 @Controller("/resource")
 public class TestController {

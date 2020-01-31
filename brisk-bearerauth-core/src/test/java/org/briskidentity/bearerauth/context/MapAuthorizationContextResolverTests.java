@@ -1,4 +1,4 @@
-package org.briskidentity.bearerauth;
+package org.briskidentity.bearerauth.context;
 
 /**
  * Tests for {@link MapAuthorizationContextResolver}.

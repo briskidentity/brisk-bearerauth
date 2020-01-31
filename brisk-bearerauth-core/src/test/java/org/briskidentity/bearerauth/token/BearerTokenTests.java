@@ -1,4 +1,4 @@
-package org.briskidentity.bearerauth;
+package org.briskidentity.bearerauth.token;
 
 import org.junit.jupiter.api.Test;
 

@@ -1,5 +1,7 @@
-package org.briskidentity.bearerauth;
+package org.briskidentity.bearerauth.http;
 
+import org.briskidentity.bearerauth.token.error.BearerTokenError;
+import org.briskidentity.bearerauth.token.error.BearerTokenException;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

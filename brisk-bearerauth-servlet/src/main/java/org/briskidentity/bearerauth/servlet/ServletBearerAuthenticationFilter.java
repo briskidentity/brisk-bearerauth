@@ -1,9 +1,9 @@
 package org.briskidentity.bearerauth.servlet;
 
 import org.briskidentity.bearerauth.BearerAuthenticationHandler;
-import org.briskidentity.bearerauth.BearerTokenException;
-import org.briskidentity.bearerauth.HttpExchange;
-import org.briskidentity.bearerauth.WwwAuthenticateBuilder;
+import org.briskidentity.bearerauth.http.HttpExchange;
+import org.briskidentity.bearerauth.http.WwwAuthenticateBuilder;
+import org.briskidentity.bearerauth.token.error.BearerTokenException;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;

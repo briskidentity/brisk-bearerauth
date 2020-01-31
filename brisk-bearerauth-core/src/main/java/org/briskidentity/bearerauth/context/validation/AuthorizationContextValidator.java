@@ -1,4 +1,7 @@
-package org.briskidentity.bearerauth;
+package org.briskidentity.bearerauth.context.validation;
+
+import org.briskidentity.bearerauth.context.AuthorizationContext;
+import org.briskidentity.bearerauth.http.HttpExchange;
 
 import java.util.Arrays;
 import java.util.List;

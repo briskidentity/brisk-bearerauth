@@ -1,5 +1,6 @@
-package org.briskidentity.bearerauth;
+package org.briskidentity.bearerauth.token;
 
+import org.briskidentity.bearerauth.http.HttpExchange;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

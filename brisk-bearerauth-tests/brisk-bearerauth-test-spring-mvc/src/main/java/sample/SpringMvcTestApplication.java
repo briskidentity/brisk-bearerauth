@@ -1,13 +1,13 @@
 package sample;
 
-import org.briskidentity.bearerauth.AuthorizationContext;
-import org.briskidentity.bearerauth.AuthorizationContextResolver;
-import org.briskidentity.bearerauth.AuthorizationContextValidator;
 import org.briskidentity.bearerauth.BearerAuthenticationHandler;
-import org.briskidentity.bearerauth.BearerToken;
-import org.briskidentity.bearerauth.MapAuthorizationContextResolver;
-import org.briskidentity.bearerauth.ScopeMapping;
+import org.briskidentity.bearerauth.context.AuthorizationContext;
+import org.briskidentity.bearerauth.context.AuthorizationContextResolver;
+import org.briskidentity.bearerauth.context.MapAuthorizationContextResolver;
+import org.briskidentity.bearerauth.context.validation.AuthorizationContextValidator;
+import org.briskidentity.bearerauth.context.validation.ScopeMapping;
 import org.briskidentity.bearerauth.servlet.ServletBearerAuthenticationFilter;
+import org.briskidentity.bearerauth.token.BearerToken;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;

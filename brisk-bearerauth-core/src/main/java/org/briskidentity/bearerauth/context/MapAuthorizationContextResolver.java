@@ -1,4 +1,6 @@
-package org.briskidentity.bearerauth;
+package org.briskidentity.bearerauth.context;
+
+import org.briskidentity.bearerauth.token.BearerToken;
 
 import java.util.Map;
 import java.util.Objects;

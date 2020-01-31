@@ -1,4 +1,4 @@
-package org.briskidentity.bearerauth;
+package org.briskidentity.bearerauth.http;
 
 /**
  * HTTP exchange abstraction.

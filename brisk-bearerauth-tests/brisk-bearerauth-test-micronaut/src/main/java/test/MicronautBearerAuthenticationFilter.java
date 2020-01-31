@@ -6,11 +6,11 @@ import io.micronaut.http.annotation.Filter;
 import io.micronaut.http.filter.OncePerRequestHttpServerFilter;
 import io.micronaut.http.filter.ServerFilterChain;
 import io.reactivex.Completable;
-import org.briskidentity.bearerauth.AuthorizationContext;
 import org.briskidentity.bearerauth.BearerAuthenticationHandler;
-import org.briskidentity.bearerauth.BearerToken;
-import org.briskidentity.bearerauth.HttpExchange;
-import org.briskidentity.bearerauth.MapAuthorizationContextResolver;
+import org.briskidentity.bearerauth.context.AuthorizationContext;
+import org.briskidentity.bearerauth.context.MapAuthorizationContextResolver;
+import org.briskidentity.bearerauth.http.HttpExchange;
+import org.briskidentity.bearerauth.token.BearerToken;
 import org.reactivestreams.Publisher;
 
 import java.time.Instant;
