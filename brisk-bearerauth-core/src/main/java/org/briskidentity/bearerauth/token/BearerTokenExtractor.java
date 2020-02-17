@@ -14,7 +14,7 @@ public interface BearerTokenExtractor extends Function<HttpExchange, BearerToken
      * @return the authorization header bearer token extractor
      */
     static BearerTokenExtractor authorizationHeader() {
-        return new AuthorizationHeaderBearerTokenExtractor();
+        return AuthorizationHeaderBearerTokenExtractor.INSTANCE;
     }
 
 }

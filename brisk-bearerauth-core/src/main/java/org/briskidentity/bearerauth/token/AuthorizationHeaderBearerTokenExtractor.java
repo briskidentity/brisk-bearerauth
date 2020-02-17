@@ -11,7 +11,12 @@ import java.util.regex.Pattern;
  */
 class AuthorizationHeaderBearerTokenExtractor implements BearerTokenExtractor {
 
+    static final AuthorizationHeaderBearerTokenExtractor INSTANCE = new AuthorizationHeaderBearerTokenExtractor();
+
     private static final Pattern authorizationHeaderPattern = Pattern.compile("^Bearer (?<token>[A-Za-z0-9\\-._~+/]+=*)");
+
+    private AuthorizationHeaderBearerTokenExtractor() {
+    }
 
     @Override
     public BearerToken apply(HttpExchange httpExchange) {

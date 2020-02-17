@@ -11,7 +11,7 @@ import static org.assertj.core.api.Assertions.assertThatNullPointerException;
  */
 class AuthorizationHeaderBearerTokenExtractorTests {
 
-    private BearerTokenExtractor bearerTokenExtractor = new AuthorizationHeaderBearerTokenExtractor();
+    private BearerTokenExtractor bearerTokenExtractor = AuthorizationHeaderBearerTokenExtractor.INSTANCE;
 
     @Test
     void apply_NullHttpExchange_ShouldThrowException() {
