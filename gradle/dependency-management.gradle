@@ -3,6 +3,7 @@ dependencies {
         compileOnly 'jakarta.servlet:jakarta.servlet-api:4.0.3'
         implementation 'org.springframework:spring-framework-bom:5.1.12.RELEASE'
         testImplementation 'org.assertj:assertj-core:3.14.0'
+        testImplementation 'org.mockito:mockito-core:3.2.4'
         testImplementation 'org.junit:junit-bom:5.6.0'
     }
 }

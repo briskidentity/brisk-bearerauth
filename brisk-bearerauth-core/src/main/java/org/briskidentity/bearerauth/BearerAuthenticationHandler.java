@@ -74,15 +74,18 @@ public class BearerAuthenticationHandler {
         private AuthorizationContextValidator authorizationContextValidator = AuthorizationContextValidator.expiry();
 
         private Builder(AuthorizationContextResolver authorizationContextResolver) {
+            Objects.requireNonNull(authorizationContextResolver, "authorizationContextResolver must not be null");
             this.authorizationContextResolver = authorizationContextResolver;
         }
 
         public Builder bearerTokenExtractor(BearerTokenExtractor bearerTokenExtractor) {
+            Objects.requireNonNull(bearerTokenExtractor, "bearerTokenExtractor must not be null");
             this.bearerTokenExtractor = bearerTokenExtractor;
             return this;
         }
 
         public Builder authorizationContextValidator(AuthorizationContextValidator authorizationContextValidator) {
+            Objects.requireNonNull(authorizationContextValidator, "authorizationContextValidator must not be null");
             this.authorizationContextValidator = authorizationContextValidator;
             return this;
         }
