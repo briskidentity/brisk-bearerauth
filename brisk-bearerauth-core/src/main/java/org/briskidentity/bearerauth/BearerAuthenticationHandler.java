@@ -2,6 +2,7 @@ package org.briskidentity.bearerauth;
 
 import org.briskidentity.bearerauth.context.AuthorizationContextResolver;
 import org.briskidentity.bearerauth.context.validation.AuthorizationContextValidator;
+import org.briskidentity.bearerauth.context.validation.DefaultAuthorizationContextValidator;
 import org.briskidentity.bearerauth.http.HttpExchange;
 import org.briskidentity.bearerauth.token.BearerToken;
 import org.briskidentity.bearerauth.token.BearerTokenExtractor;
@@ -71,7 +72,7 @@ public class BearerAuthenticationHandler {
 
         private BearerTokenExtractor bearerTokenExtractor = BearerTokenExtractor.authorizationHeader();
 
-        private AuthorizationContextValidator authorizationContextValidator = AuthorizationContextValidator.expiry();
+        private AuthorizationContextValidator authorizationContextValidator = new DefaultAuthorizationContextValidator();
 
         private Builder(AuthorizationContextResolver authorizationContextResolver) {
             Objects.requireNonNull(authorizationContextResolver, "authorizationContextResolver must not be null");

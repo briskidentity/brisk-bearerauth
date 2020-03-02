@@ -5,6 +5,7 @@ import org.briskidentity.bearerauth.context.AuthorizationContext;
 import org.briskidentity.bearerauth.context.AuthorizationContextResolver;
 import org.briskidentity.bearerauth.context.MapAuthorizationContextResolver;
 import org.briskidentity.bearerauth.context.validation.AuthorizationContextValidator;
+import org.briskidentity.bearerauth.context.validation.DefaultAuthorizationContextValidator;
 import org.briskidentity.bearerauth.context.validation.ScopeMapping;
 import org.briskidentity.bearerauth.servlet.ServletBearerAuthenticationFilter;
 import org.briskidentity.bearerauth.token.BearerToken;
@@ -54,13 +55,13 @@ public class SpringMvcTestApplication {
                 new MapAuthorizationContextResolver(authorizationContexts);
         List<ScopeMapping> scopeMappings = new ArrayList<>();
         scopeMappings.add(new ScopeMapping("/resource", "GET", Collections.singleton("scope:read")));
-        AuthorizationContextValidator authorizationContextValidator = AuthorizationContextValidator.composite(
-                AuthorizationContextValidator.expiry(), AuthorizationContextValidator.scope(scopeMappings));
+        AuthorizationContextValidator authorizationContextValidator = new DefaultAuthorizationContextValidator(
+                scopeMappings);
         BearerAuthenticationHandler bearerAuthenticationHandler = BearerAuthenticationHandler.builder(
                 authorizationContextResolver).authorizationContextValidator(authorizationContextValidator).build();
         FilterRegistrationBean<ServletBearerAuthenticationFilter> servletBearerAuthenticationFilter =
                 new FilterRegistrationBean<>(new ServletBearerAuthenticationFilter(bearerAuthenticationHandler));
-        servletBearerAuthenticationFilter.setUrlPatterns(Collections.singleton("/resource"));
+        servletBearerAuthenticationFilter.setUrlPatterns(Collections.singleton("/resource/*"));
         return servletBearerAuthenticationFilter;
     }
 

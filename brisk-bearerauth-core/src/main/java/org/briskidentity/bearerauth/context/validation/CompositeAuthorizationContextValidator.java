@@ -9,14 +9,14 @@ import java.util.Objects;
 /**
  *
  */
-class CompositeAuthorizationContextValidator implements AuthorizationContextValidator {
+public class CompositeAuthorizationContextValidator implements AuthorizationContextValidator {
 
     private final List<AuthorizationContextValidator> validators;
 
     /**
      * @param validators
      */
-    CompositeAuthorizationContextValidator(List<AuthorizationContextValidator> validators) {
+    public CompositeAuthorizationContextValidator(List<AuthorizationContextValidator> validators) {
         Objects.requireNonNull(validators, "validators must not be null");
         this.validators = validators;
     }

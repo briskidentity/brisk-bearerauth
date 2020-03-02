@@ -8,22 +8,22 @@ import java.util.Set;
  */
 public final class ScopeMapping {
 
-    private final String path;
+    private final String pathPattern;
 
     private final String method;
 
     private final Set<String> scopeValues;
 
     /**
-     * @param path
+     * @param pathPattern
      * @param method
      * @param scopeValues
      */
-    public ScopeMapping(String path, String method, Set<String> scopeValues) {
-        Objects.requireNonNull(path, "path must not be null");
+    public ScopeMapping(String pathPattern, String method, Set<String> scopeValues) {
+        Objects.requireNonNull(pathPattern, "pathPattern must not be null");
         Objects.requireNonNull(method, "method must not be null");
         Objects.requireNonNull(scopeValues, "scopeValues must not be null");
-        this.path = path;
+        this.pathPattern = pathPattern;
         this.method = method;
         this.scopeValues = scopeValues;
     }
@@ -31,8 +31,8 @@ public final class ScopeMapping {
     /**
      * @return
      */
-    public String getPath() {
-        return this.path;
+    public String getPathPattern() {
+        return this.pathPattern;
     }
 
     /**
@@ -58,13 +58,13 @@ public final class ScopeMapping {
             return false;
         }
         ScopeMapping that = (ScopeMapping) obj;
-        return this.path.equals(that.path) && this.method.equals(that.method)
+        return this.pathPattern.equals(that.pathPattern) && this.method.equals(that.method)
                 && this.scopeValues.equals(that.scopeValues);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.path, this.method, this.scopeValues);
+        return Objects.hash(this.pathPattern, this.method, this.scopeValues);
     }
 
 }
