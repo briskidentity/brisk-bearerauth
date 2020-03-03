@@ -4,5 +4,5 @@ plugins {
 
 dependencies {
     implementation project(':brisk-bearerauth-servlet')
-    implementation 'org.eclipse.jetty:jetty-servlet:9.4.26.v20200117'
+    implementation 'org.eclipse.jetty:jetty-servlet:9.4.27.v20200227'
 }
