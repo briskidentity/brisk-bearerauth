@@ -11,12 +11,14 @@ import org.gradle.api.publish.maven.MavenPublication;
 import org.gradle.api.publish.maven.plugins.MavenPublishPlugin;
 import org.gradle.api.tasks.testing.Test;
 
+import javax.annotation.Nonnull;
 import java.io.File;
 
+@SuppressWarnings("unused")
 public class ConventionsPlugin implements Plugin<Project> {
 
     @Override
-    public void apply(Project project) {
+    public void apply(@Nonnull Project project) {
         applyJavaConventions(project);
         applyMavenPublishConventions(project);
     }
@@ -25,7 +27,7 @@ public class ConventionsPlugin implements Plugin<Project> {
         project.getPlugins().withType(JavaPlugin.class, javaPlugin -> {
             JavaPluginExtension javaPluginExtension = project.getExtensions().getByType(JavaPluginExtension.class);
             javaPluginExtension.setSourceCompatibility(JavaVersion.VERSION_1_8);
-            project.apply(action -> action.from(new File(project.getRootDir(), "gradle/dependency-management.gradle")));
+            project.apply(action -> action.from(new File(project.getRootDir(), "gradle/dependency-versions.gradle")));
             project.getTasks().withType(Test.class, test -> {
                 test.useJUnitPlatform();
                 test.setMaxHeapSize("1g");
@@ -33,6 +35,7 @@ public class ConventionsPlugin implements Plugin<Project> {
         });
     }
 
+    @SuppressWarnings("UnstableApiUsage")
     private void applyMavenPublishConventions(Project project) {
         project.getPlugins().withType(MavenPublishPlugin.class, mavenPublishPlugin -> {
             PublishingExtension publishingExtension = project.getExtensions().getByType(PublishingExtension.class);

@@ -1,8 +1,9 @@
 plugins {
     id 'application'
+    id 'org.briskidentity.bearerauth.conventions'
 }
 
 dependencies {
     implementation project(':brisk-bearerauth-servlet')
-    implementation 'org.eclipse.jetty:jetty-servlet:9.4.27.v20200227'
+    implementation "org.eclipse.jetty:jetty-servlet:$jettyVersion"
 }

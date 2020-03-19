@@ -5,11 +5,11 @@ plugins {
 }
 
 dependencies {
-    implementation 'io.github.azagniotov:ant-style-path-matcher'
+    implementation "io.github.azagniotov:ant-style-path-matcher:$antMatcherVersion"
 
-    testImplementation platform('org.junit:junit-bom')
-    testImplementation 'org.assertj:assertj-core'
-    testImplementation 'org.mockito:mockito-core'
+    testImplementation platform("org.junit:junit-bom:$junitVersion")
+    testImplementation "org.assertj:assertj-core:$assertjVersion"
+    testImplementation "org.mockito:mockito-core:$mockitoVersion"
     testImplementation 'org.junit.jupiter:junit-jupiter-api'
 
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'

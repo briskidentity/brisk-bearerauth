@@ -7,10 +7,10 @@ plugins {
 dependencies {
     api project(':brisk-bearerauth-core')
 
-    compileOnly 'jakarta.servlet:jakarta.servlet-api'
+    compileOnly "jakarta.servlet:jakarta.servlet-api:$servletApiVersion"
 
-    testImplementation platform('org.junit:junit-bom')
-    testImplementation 'org.assertj:assertj-core'
+    testImplementation platform("org.junit:junit-bom:$junitVersion")
+    testImplementation "org.assertj:assertj-core:$assertjVersion"
     testImplementation 'org.junit.jupiter:junit-jupiter-api'
 
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'

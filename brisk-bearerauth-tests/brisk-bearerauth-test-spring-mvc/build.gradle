@@ -2,6 +2,7 @@ import org.springframework.boot.gradle.plugin.SpringBootPlugin
 
 plugins {
     id 'java'
+    id 'org.briskidentity.bearerauth.conventions'
     id 'org.springframework.boot'
 }
 
