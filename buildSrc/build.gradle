@@ -12,7 +12,7 @@ repositories {
 }
 
 dependencies {
-    implementation "com.github.ben-manes:gradle-versions-plugin:$versionsVersion"
+    implementation "com.github.ben-manes:gradle-versions-plugin:$pluginVersions.versions"
 }
 
 gradlePlugin {

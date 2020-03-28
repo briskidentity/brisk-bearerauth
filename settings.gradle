@@ -2,7 +2,7 @@ pluginManagement {
     apply from: 'gradle/dependency-versions.gradle'
 
     plugins {
-        id 'org.springframework.boot' version springBootVersion
+        id 'org.springframework.boot' version testLibraryVersions.springBoot
     }
 }
 

@@ -22,10 +22,10 @@ dependencies {
     webMvcSupportApi project(':brisk-bearerauth-servlet')
     webMvcSupportApi 'org.springframework:spring-webmvc'
 
-    implementation platform("org.springframework:spring-framework-bom:$springFrameworkVersion")
+    implementation platform("org.springframework:spring-framework-bom:$libraryVersions.springFramework")
 
-    testImplementation platform("org.junit:junit-bom:$junitVersion")
-    testImplementation "org.assertj:assertj-core:$assertjVersion"
+    testImplementation platform("org.junit:junit-bom:$testLibraryVersions.junit")
+    testImplementation "org.assertj:assertj-core:$testLibraryVersions.assertj"
     testImplementation 'org.junit.jupiter:junit-jupiter-api'
 
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'

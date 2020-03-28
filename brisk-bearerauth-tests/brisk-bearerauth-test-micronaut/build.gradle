@@ -4,17 +4,17 @@ plugins {
 }
 
 dependencies {
-    annotationProcessor platform("io.micronaut:micronaut-bom:$micronautVersion")
+    annotationProcessor platform("io.micronaut:micronaut-bom:$testLibraryVersions.micronaut")
     annotationProcessor 'io.micronaut:micronaut-inject-java'
 
-    implementation platform("io.micronaut:micronaut-bom:$micronautVersion")
+    implementation platform("io.micronaut:micronaut-bom:$testLibraryVersions.micronaut")
     implementation project(':brisk-bearerauth-core')
     implementation 'io.micronaut:micronaut-http-server-netty'
     implementation 'io.micronaut:micronaut-inject'
 
-    runtimeOnly "ch.qos.logback:logback-classic:$logbackVersion"
+    runtimeOnly "ch.qos.logback:logback-classic:$testLibraryVersions.logback"
 
-    testAnnotationProcessor platform("io.micronaut:micronaut-bom:$micronautVersion")
+    testAnnotationProcessor platform("io.micronaut:micronaut-bom:$testLibraryVersions.micronaut")
     testAnnotationProcessor 'io.micronaut:micronaut-inject-java'
 
     testImplementation 'io.micronaut.test:micronaut-test-junit5'
