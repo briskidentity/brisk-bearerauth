@@ -2,7 +2,18 @@ plugins {
     id 'java-gradle-plugin'
 }
 
+apply from: "$rootDir.parentFile/gradle/dependency-versions.gradle"
+
 sourceCompatibility = JavaVersion.VERSION_1_8
+
+repositories {
+    mavenCentral()
+    gradlePluginPortal()
+}
+
+dependencies {
+    implementation "com.github.ben-manes:gradle-versions-plugin:$versionsVersion"
+}
 
 gradlePlugin {
     plugins {
