@@ -4,7 +4,6 @@ ext {
     testLibraryVersions = [:]
 }
 
-libraryVersions.antMatcher = '1.0.0'
 libraryVersions.servletApi = '4.0.3'
 libraryVersions.springFramework = '5.1.12.RELEASE'
 

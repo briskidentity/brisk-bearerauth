@@ -5,8 +5,6 @@ plugins {
 }
 
 dependencies {
-    implementation "io.github.azagniotov:ant-style-path-matcher:$libraryVersions.antMatcher"
-
     testImplementation platform("org.junit:junit-bom:$testLibraryVersions.junit")
     testImplementation "org.assertj:assertj-core:$testLibraryVersions.assertj"
     testImplementation "org.mockito:mockito-core:$testLibraryVersions.mockito"

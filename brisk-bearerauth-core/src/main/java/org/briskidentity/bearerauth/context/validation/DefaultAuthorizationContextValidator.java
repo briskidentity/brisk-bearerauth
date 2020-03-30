@@ -1,6 +1,5 @@
 package org.briskidentity.bearerauth.context.validation;
 
-import io.github.azagniotov.matcher.AntPathMatcher;
 import org.briskidentity.bearerauth.context.AuthorizationContext;
 import org.briskidentity.bearerauth.http.HttpExchange;
 import org.briskidentity.bearerauth.token.error.BearerTokenError;
@@ -14,7 +13,7 @@ import java.util.Set;
 
 public class DefaultAuthorizationContextValidator implements AuthorizationContextValidator {
 
-    private static final AntPathMatcher antPathMatcher = new AntPathMatcher.Builder().build();
+    private static final AntPathMatcher antPathMatcher = new AntPathMatcher();
 
     private final List<ScopeMapping> scopeMappings;
 
@@ -70,7 +69,7 @@ public class DefaultAuthorizationContextValidator implements AuthorizationContex
     }
 
     private static boolean pathMatches(ScopeMapping scopeMapping, HttpExchange httpExchange) {
-        return antPathMatcher.isMatch(scopeMapping.getPathPattern(), httpExchange.getRequestPath());
+        return antPathMatcher.matches(scopeMapping.getPathPattern(), httpExchange.getRequestPath());
     }
 
     private static boolean methodMatches(ScopeMapping scopeMapping, HttpExchange httpExchange) {
