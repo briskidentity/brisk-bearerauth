@@ -5,7 +5,7 @@ ext {
 }
 
 libraryVersions.servletApi = '4.0.3'
-libraryVersions.springFramework = '5.1.12.RELEASE'
+libraryVersions.springFramework = '5.1.14.RELEASE'
 
 pluginVersions.versions = '0.28.0'
 
