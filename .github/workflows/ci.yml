@@ -14,4 +14,4 @@ jobs:
         with:
           java-version: ${{ matrix.java }}
       - run: chmod +x gradlew
-      - run: ./gradlew check
+      - run: ./gradlew check --stacktrace
