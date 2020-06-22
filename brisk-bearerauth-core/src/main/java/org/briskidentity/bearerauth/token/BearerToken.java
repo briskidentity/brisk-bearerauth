@@ -8,7 +8,7 @@ import java.util.Objects;
  */
 public class BearerToken implements Serializable {
 
-    private String value;
+    private final String value;
 
     public BearerToken(String value) {
         Objects.requireNonNull(value, "value must not be null");
