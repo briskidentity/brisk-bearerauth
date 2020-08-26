@@ -2,10 +2,20 @@ plugins {
     id 'base'
 }
 
-allprojects {
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'org.briskidentity.bearerauth.conventions'
+
     group = 'org.briskidentity.bearerauth'
+
+    sourceCompatibility = JavaVersion.VERSION_1_8
 
     repositories {
         mavenCentral()
+    }
+
+    test {
+        maxHeapSize = '1g'
+        useJUnitPlatform()
     }
 }

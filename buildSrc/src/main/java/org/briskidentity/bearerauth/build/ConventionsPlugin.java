@@ -2,7 +2,6 @@ package org.briskidentity.bearerauth.build;
 
 import com.github.benmanes.gradle.versions.VersionsPlugin;
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask;
-import org.gradle.api.JavaVersion;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.plugins.JavaPlugin;
@@ -11,8 +10,6 @@ import org.gradle.api.publish.PublishingExtension;
 import org.gradle.api.publish.maven.MavenPom;
 import org.gradle.api.publish.maven.MavenPublication;
 import org.gradle.api.publish.maven.plugins.MavenPublishPlugin;
-import org.gradle.api.tasks.TaskContainer;
-import org.gradle.api.tasks.testing.Test;
 
 import javax.annotation.Nonnull;
 import java.io.File;
@@ -30,19 +27,12 @@ public class ConventionsPlugin implements Plugin<Project> {
 
     private void applyJavaConventions(Project project) {
         project.getPlugins().withType(JavaPlugin.class, javaPlugin -> {
-            JavaPluginExtension javaPluginExtension = project.getExtensions().getByType(JavaPluginExtension.class);
-            javaPluginExtension.setSourceCompatibility(JavaVersion.VERSION_1_8);
             project.apply(action -> action.from(new File(project.getRootDir(), "gradle/dependency-versions.gradle")));
             project.getPluginManager().apply(VersionsPlugin.class);
-            TaskContainer tasks = project.getTasks();
-            tasks.withType(DependencyUpdatesTask.class, dependencyUpdatesTask -> {
+            project.getTasks().withType(DependencyUpdatesTask.class, dependencyUpdatesTask -> {
                 dependencyUpdatesTask.setGradleReleaseChannel("current");
                 dependencyUpdatesTask.rejectVersionIf(candidate -> isNonStable(candidate.getCandidate().getVersion())
                         && !isNonStable(candidate.getCurrentVersion()));
-            });
-            tasks.withType(Test.class, test -> {
-                test.useJUnitPlatform();
-                test.setMaxHeapSize("1g");
             });
         });
     }
