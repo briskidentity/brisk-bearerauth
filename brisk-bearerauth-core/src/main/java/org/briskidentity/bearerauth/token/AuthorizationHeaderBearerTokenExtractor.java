@@ -15,7 +15,7 @@ class AuthorizationHeaderBearerTokenExtractor implements BearerTokenExtractor {
     }
 
     @Override
-    public BearerToken apply(HttpExchange httpExchange) {
+    public BearerToken extract(HttpExchange httpExchange) {
         Objects.requireNonNull(httpExchange, "httpExchange must not be null");
         String authorizationHeader = httpExchange.getRequestHeader("Authorization");
         if ((authorizationHeader == null) || !authorizationHeader.startsWith("Bearer ")) {

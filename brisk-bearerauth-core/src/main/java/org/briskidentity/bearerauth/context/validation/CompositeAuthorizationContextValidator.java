@@ -22,9 +22,9 @@ public class CompositeAuthorizationContextValidator implements AuthorizationCont
     }
 
     @Override
-    public void accept(HttpExchange httpExchange, AuthorizationContext authorizationContext) {
+    public void validate(AuthorizationContext authorizationContext, HttpExchange httpExchange) {
         for (AuthorizationContextValidator validator : this.validators) {
-            validator.accept(httpExchange, authorizationContext);
+            validator.validate(authorizationContext, httpExchange);
         }
     }
 

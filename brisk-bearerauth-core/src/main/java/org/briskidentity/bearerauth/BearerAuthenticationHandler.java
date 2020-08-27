@@ -50,17 +50,17 @@ public class BearerAuthenticationHandler {
      * @param httpExchange the HTTP exchange
      */
     public CompletionStage<Void> handle(HttpExchange httpExchange) {
-        BearerToken bearerToken = this.bearerTokenExtractor.apply(httpExchange);
+        BearerToken bearerToken = this.bearerTokenExtractor.extract(httpExchange);
         if (bearerToken == null) {
             CompletableFuture<Void> result = new CompletableFuture<>();
             result.completeExceptionally(new BearerTokenException());
             return result;
         }
-        return this.authorizationContextResolver.apply(bearerToken).handle((authorizationContext, throwable) -> {
+        return this.authorizationContextResolver.resolve(bearerToken).handle((authorizationContext, throwable) -> {
             if (authorizationContext == null) {
                 throw new BearerTokenException(BearerTokenError.INVALID_TOKEN);
             }
-            this.authorizationContextValidator.accept(httpExchange, authorizationContext);
+            this.authorizationContextValidator.validate(authorizationContext, httpExchange);
             httpExchange.setAttribute(AUTHORIZATION_CONTEXT_ATTRIBUTE, authorizationContext);
             return null;
         });

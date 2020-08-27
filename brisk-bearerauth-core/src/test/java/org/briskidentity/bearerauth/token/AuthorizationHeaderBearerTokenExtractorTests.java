@@ -14,29 +14,29 @@ class AuthorizationHeaderBearerTokenExtractorTests {
     private final BearerTokenExtractor bearerTokenExtractor = AuthorizationHeaderBearerTokenExtractor.INSTANCE;
 
     @Test
-    void apply_NullHttpExchange_ShouldThrowException() {
-        assertThatNullPointerException().isThrownBy(() -> this.bearerTokenExtractor.apply(null))
+    void extract_NullHttpExchange_ShouldThrowException() {
+        assertThatNullPointerException().isThrownBy(() -> this.bearerTokenExtractor.extract(null))
                 .withMessage("httpExchange must not be null");
     }
 
     @Test
-    void apply_HttpExchangeWithNoAuthorizationHeader_ShouldReturnNull() {
-        assertThat(this.bearerTokenExtractor.apply(new TestHttpExchange(null))).isNull();
+    void extract_HttpExchangeWithNoAuthorizationHeader_ShouldReturnNull() {
+        assertThat(this.bearerTokenExtractor.extract(new TestHttpExchange(null))).isNull();
     }
 
     @Test
-    void apply_HttpExchangeWithUnsupportedAuthorizationHeaderScheme_ShouldReturnNull() {
-        assertThat(this.bearerTokenExtractor.apply(new TestHttpExchange("Basic test"))).isNull();
+    void extract_HttpExchangeWithUnsupportedAuthorizationHeaderScheme_ShouldReturnNull() {
+        assertThat(this.bearerTokenExtractor.extract(new TestHttpExchange("Basic test"))).isNull();
     }
 
     @Test
-    void apply_HttpExchangeWithAuthorizationHeader_ShouldReturnNull() {
-        assertThat(this.bearerTokenExtractor.apply(new TestHttpExchange("bearer test"))).isNull();
+    void extract_HttpExchangeWithAuthorizationHeader_ShouldReturnNull() {
+        assertThat(this.bearerTokenExtractor.extract(new TestHttpExchange("bearer test"))).isNull();
     }
 
     @Test
-    void apply_HttpExchangeWithValidAuthorizationHeader_ShouldReturnToken() {
-        assertThat(this.bearerTokenExtractor.apply(new TestHttpExchange("Bearer test")))
+    void extract_HttpExchangeWithValidAuthorizationHeader_ShouldReturnToken() {
+        assertThat(this.bearerTokenExtractor.extract(new TestHttpExchange("Bearer test")))
                 .isEqualTo(new BearerToken("test"));
     }
 

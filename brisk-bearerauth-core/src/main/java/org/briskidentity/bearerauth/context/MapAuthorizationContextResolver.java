@@ -20,7 +20,7 @@ public class MapAuthorizationContextResolver implements AuthorizationContextReso
     }
 
     @Override
-    public CompletionStage<AuthorizationContext> apply(BearerToken bearerToken) {
+    public CompletionStage<AuthorizationContext> resolve(BearerToken bearerToken) {
         return CompletableFuture.completedFuture(this.authorizationContexts.get(bearerToken));
     }
 

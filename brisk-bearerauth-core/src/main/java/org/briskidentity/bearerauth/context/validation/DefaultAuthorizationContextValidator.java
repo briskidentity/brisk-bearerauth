@@ -46,7 +46,7 @@ public class DefaultAuthorizationContextValidator implements AuthorizationContex
     }
 
     @Override
-    public void accept(HttpExchange httpExchange, AuthorizationContext authorizationContext) {
+    public void validate(AuthorizationContext authorizationContext, HttpExchange httpExchange) {
         if (this.clock.instant().isAfter(authorizationContext.getExpiry())) {
             throw new BearerTokenException(BearerTokenError.INVALID_TOKEN);
         }
@@ -54,7 +54,7 @@ public class DefaultAuthorizationContextValidator implements AuthorizationContex
             throw new BearerTokenException(BearerTokenError.INSUFFICIENT_SCOPE);
         }
         if (this.delegate != null) {
-            this.delegate.accept(httpExchange, authorizationContext);
+            this.delegate.validate(authorizationContext, httpExchange);
         }
     }
 

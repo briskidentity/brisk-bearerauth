@@ -82,8 +82,8 @@ class BearerAuthenticationHandlerTests {
     void handle_NoAuthorizationContext_ShouldCompleteExceptionally() {
         BearerToken bearerToken = new BearerToken("secret");
         given(this.httpExchange.getRequestHeader("Authorization")).willReturn(bearerToken.toString());
-        given(this.bearerTokenExtractor.apply(any())).willReturn(bearerToken);
-        given(this.authorizationContextResolver.apply(bearerToken)).willReturn(CompletableFuture.completedFuture(null));
+        given(this.bearerTokenExtractor.extract(any())).willReturn(bearerToken);
+        given(this.authorizationContextResolver.resolve(bearerToken)).willReturn(CompletableFuture.completedFuture(null));
         assertThat(this.bearerAuthenticationHandler.handle(this.httpExchange)).isCompletedExceptionally()
                 .hasFailedWithThrowableThat().isInstanceOf(BearerTokenException.class)
                 .hasFieldOrPropertyWithValue("error", BearerTokenError.INVALID_TOKEN);
@@ -95,8 +95,8 @@ class BearerAuthenticationHandlerTests {
         AuthorizationContext authorizationContext = new AuthorizationContext(Collections.emptySet(), Instant.now(),
                 Collections.emptyMap());
         given(this.httpExchange.getRequestHeader("Authorization")).willReturn(bearerToken.toString());
-        given(this.bearerTokenExtractor.apply(any())).willReturn(bearerToken);
-        given(this.authorizationContextResolver.apply(bearerToken))
+        given(this.bearerTokenExtractor.extract(any())).willReturn(bearerToken);
+        given(this.authorizationContextResolver.resolve(bearerToken))
                 .willReturn(CompletableFuture.completedFuture(authorizationContext));
         assertThat(this.bearerAuthenticationHandler.handle(httpExchange)).isCompleted();
         verify(this.httpExchange).setAttribute(eq(BearerAuthenticationHandler.AUTHORIZATION_CONTEXT_ATTRIBUTE),
