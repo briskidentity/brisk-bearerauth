@@ -8,6 +8,7 @@ import org.briskidentity.bearerauth.token.BearerToken;
 import org.briskidentity.bearerauth.token.BearerTokenExtractor;
 import org.briskidentity.bearerauth.token.error.BearerTokenError;
 import org.briskidentity.bearerauth.token.error.BearerTokenException;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -29,6 +30,8 @@ import static org.mockito.Mockito.verify;
  */
 class BearerAuthenticationHandlerTests {
 
+    private AutoCloseable mocks;
+
     @Mock
     private AuthorizationContextResolver authorizationContextResolver;
 
@@ -45,10 +48,15 @@ class BearerAuthenticationHandlerTests {
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.initMocks(this);
+        this.mocks = MockitoAnnotations.openMocks(this);
         this.bearerAuthenticationHandler = BearerAuthenticationHandler.builder(this.authorizationContextResolver)
                 .bearerTokenExtractor(this.bearerTokenExtractor)
                 .authorizationContextValidator(this.authorizationContextValidator).build();
+    }
+
+    @AfterEach
+    void tearDown() throws Exception {
+        this.mocks.close();
     }
 
     @Test
