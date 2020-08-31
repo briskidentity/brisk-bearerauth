@@ -1,18 +1,17 @@
 import org.springframework.boot.gradle.plugin.SpringBootPlugin
 
 plugins {
-    id 'org.springframework.boot'
+    id("org.springframework.boot")
 }
 
 dependencies {
-    implementation platform(SpringBootPlugin.BOM_COORDINATES)
-
-    implementation(project(':brisk-bearerauth-spring')) {
+    implementation(project(":brisk-bearerauth-spring")) {
         capabilities {
-            requireCapability('org.briskidentity.bearerauth:brisk-bearerauth-spring-web-mvc-support')
+            requireCapability("org.briskidentity.bearerauth:brisk-bearerauth-spring-web-mvc-support")
         }
     }
-    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation(platform(SpringBootPlugin.BOM_COORDINATES))
+    implementation("org.springframework.boot:spring-boot-starter-web")
 
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
 }

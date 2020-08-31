@@ -1,11 +1,6 @@
-plugins {
-    id 'java-gradle-plugin'
-    id 'com.github.ben-manes.versions'
-}
-
-apply from: "$rootDir.parentFile/gradle/dependency-versions.gradle"
-
-sourceCompatibility = JavaVersion.VERSION_1_8
+apply(from: "$rootDir.parentFile/gradle/dependency-versions.gradle")
+apply(plugin: "java-gradle-plugin")
+apply(plugin: "com.github.ben-manes.versions")
 
 repositories {
     mavenCentral()
@@ -13,14 +8,18 @@ repositories {
 }
 
 dependencies {
-    implementation "com.github.ben-manes:gradle-versions-plugin:$pluginVersions.versions"
+    implementation("com.github.ben-manes:gradle-versions-plugin:$pluginVersions.versions")
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
 }
 
 gradlePlugin {
     plugins {
         conventionsPlugin {
-            id = 'org.briskidentity.bearerauth.conventions'
-            implementationClass = 'org.briskidentity.bearerauth.build.ConventionsPlugin'
+            id = "org.briskidentity.bearerauth.conventions"
+            implementationClass = "org.briskidentity.bearerauth.build.ConventionsPlugin"
         }
     }
 }

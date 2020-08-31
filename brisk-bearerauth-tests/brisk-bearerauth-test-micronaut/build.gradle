@@ -1,27 +1,27 @@
 plugins {
-    id 'application'
+    id("application")
 }
 
 dependencies {
-    annotationProcessor platform("io.micronaut:micronaut-bom:$testLibraryVersions.micronaut")
-    annotationProcessor 'io.micronaut:micronaut-inject-java'
+    implementation(project(":brisk-bearerauth-core"))
+    implementation(platform("io.micronaut:micronaut-bom:$testLibraryVersions.micronaut"))
+    implementation("io.micronaut:micronaut-http-server-netty")
+    implementation("io.micronaut:micronaut-inject")
 
-    implementation platform("io.micronaut:micronaut-bom:$testLibraryVersions.micronaut")
-    implementation project(':brisk-bearerauth-core')
-    implementation 'io.micronaut:micronaut-http-server-netty'
-    implementation 'io.micronaut:micronaut-inject'
+    annotationProcessor(platform("io.micronaut:micronaut-bom:$testLibraryVersions.micronaut"))
+    annotationProcessor("io.micronaut:micronaut-inject-java")
 
-    runtimeOnly "ch.qos.logback:logback-classic:$testLibraryVersions.logback"
+    runtimeOnly("ch.qos.logback:logback-classic:$testLibraryVersions.logback")
 
-    testAnnotationProcessor platform("io.micronaut:micronaut-bom:$testLibraryVersions.micronaut")
-    testAnnotationProcessor 'io.micronaut:micronaut-inject-java'
+    testImplementation("io.micronaut.test:micronaut-test-junit5")
+    testImplementation("org.junit.jupiter:junit-jupiter-api")
 
-    testImplementation 'io.micronaut.test:micronaut-test-junit5'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api'
+    testAnnotationProcessor(platform("io.micronaut:micronaut-bom:$testLibraryVersions.micronaut"))
+    testAnnotationProcessor("io.micronaut:micronaut-inject-java")
 
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
 }
 
 application {
-    mainClassName = 'test.SampleMicronautApplication'
+    mainClassName = "test.SampleMicronautApplication"
 }

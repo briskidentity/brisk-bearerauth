@@ -1,17 +1,21 @@
-pluginManagement {
-    apply from: 'gradle/dependency-versions.gradle'
+buildscript {
+    apply(from: "gradle/dependency-versions.gradle")
 
-    plugins {
-        id 'org.springframework.boot' version testLibraryVersions.springBoot
+    repositories {
+        gradlePluginPortal()
+    }
+
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:$testLibraryVersions.springBoot")
     }
 }
 
-rootProject.name = 'brisk-bearerauth'
+rootProject.name = "brisk-bearerauth"
 
-include 'brisk-bearerauth-core'
-include 'brisk-bearerauth-servlet'
-include 'brisk-bearerauth-spring'
+include("brisk-bearerauth-core")
+include("brisk-bearerauth-servlet")
+include("brisk-bearerauth-spring")
 
 file("$rootDir/brisk-bearerauth-tests").eachDirMatch(~/brisk-bearerauth-test-.*/) {
-    include "brisk-bearerauth-tests:$it.name"
+    include("brisk-bearerauth-tests:$it.name")
 }

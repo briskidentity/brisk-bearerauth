@@ -1,31 +1,32 @@
 plugins {
-    id 'java-library'
-    id 'maven-publish'
+    id("java-library")
+    id("maven-publish")
 }
 
 java {
-    registerFeature('webFluxSupport') {
+    registerFeature("webMvcSupport") {
         usingSourceSet(sourceSets.main)
     }
-    registerFeature('webMvcSupport') {
+
+    registerFeature("webFluxSupport") {
         usingSourceSet(sourceSets.main)
     }
 }
 
 dependencies {
-    api project(':brisk-bearerauth-core')
+    api(project(":brisk-bearerauth-core"))
 
-    webFluxSupportApi project(':brisk-bearerauth-core')
-    webFluxSupportApi 'org.springframework:spring-webflux'
+    webMvcSupportApi(project(":brisk-bearerauth-servlet"))
+    webMvcSupportApi("org.springframework:spring-webmvc")
 
-    webMvcSupportApi project(':brisk-bearerauth-servlet')
-    webMvcSupportApi 'org.springframework:spring-webmvc'
+    webFluxSupportApi(project(":brisk-bearerauth-core"))
+    webFluxSupportApi("org.springframework:spring-webflux")
 
-    implementation platform("org.springframework:spring-framework-bom:$libraryVersions.springFramework")
+    implementation(platform("org.springframework:spring-framework-bom:$libraryVersions.springFramework"))
 
-    testImplementation platform("org.junit:junit-bom:$testLibraryVersions.junit")
-    testImplementation "org.assertj:assertj-core:$testLibraryVersions.assertj"
-    testImplementation 'org.junit.jupiter:junit-jupiter-api'
+    testImplementation(platform("org.junit:junit-bom:$testLibraryVersions.junit"))
+    testImplementation("org.assertj:assertj-core:$testLibraryVersions.assertj")
+    testImplementation("org.junit.jupiter:junit-jupiter-api")
 
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
 }
