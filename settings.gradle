@@ -19,3 +19,5 @@ include("brisk-bearerauth-spring")
 file("$rootDir/brisk-bearerauth-tests").eachDirMatch(~/brisk-bearerauth-test-.*/) {
     include("brisk-bearerauth-tests:$it.name")
 }
+
+enableFeaturePreview("ONE_LOCKFILE_PER_PROJECT")

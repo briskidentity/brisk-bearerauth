@@ -1,0 +1,16 @@
+# This is a Gradle generated file for dependency locking.
+# Manual edits can break the build and are not advised.
+# This file is expected to be part of source control.
+net.bytebuddy:byte-buddy-agent:1.10.13=testCompileClasspath,testRuntimeClasspath
+net.bytebuddy:byte-buddy:1.10.13=testCompileClasspath,testRuntimeClasspath
+org.apiguardian:apiguardian-api:1.1.0=testCompileClasspath,testRuntimeClasspath
+org.assertj:assertj-core:3.17.1=testCompileClasspath,testRuntimeClasspath
+org.junit.jupiter:junit-jupiter-api:5.6.2=testCompileClasspath,testRuntimeClasspath
+org.junit.jupiter:junit-jupiter-engine:5.6.2=testRuntimeClasspath
+org.junit.platform:junit-platform-commons:1.6.2=testCompileClasspath,testRuntimeClasspath
+org.junit.platform:junit-platform-engine:1.6.2=testRuntimeClasspath
+org.junit:junit-bom:5.6.2=testCompileClasspath,testRuntimeClasspath
+org.mockito:mockito-core:3.5.7=testCompileClasspath,testRuntimeClasspath
+org.objenesis:objenesis:3.1=testCompileClasspath,testRuntimeClasspath
+org.opentest4j:opentest4j:1.2.0=testCompileClasspath,testRuntimeClasspath
+empty=annotationProcessor,archives,compile,compileClasspath,compileOnly,default,runtime,runtimeClasspath,testAnnotationProcessor,testCompile,testCompileOnly,testRuntime

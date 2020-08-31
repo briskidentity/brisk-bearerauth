@@ -9,3 +9,5 @@ buildscript {
         classpath("com.github.ben-manes:gradle-versions-plugin:$pluginVersions.versions")
     }
 }
+
+enableFeaturePreview("ONE_LOCKFILE_PER_PROJECT")
