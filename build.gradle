@@ -26,17 +26,4 @@ subprojects {
         maxHeapSize = "1g"
         useJUnitPlatform()
     }
-
-    task resolveAndLockAll {
-        doFirst {
-            assert gradle.startParameter.writeDependencyLocks
-        }
-        doLast {
-            configurations.findAll {
-                it.canBeResolved
-            }.each {
-                it.resolve()
-            }
-        }
-    }
 }
