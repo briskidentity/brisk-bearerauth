@@ -1,6 +1,7 @@
 package org.briskidentity.bearerauth.servlet;
 
 import org.briskidentity.bearerauth.BearerAuthenticationHandler;
+import org.briskidentity.bearerauth.context.AuthorizationContext;
 import org.briskidentity.bearerauth.http.HttpExchange;
 import org.briskidentity.bearerauth.http.WwwAuthenticateBuilder;
 import org.briskidentity.bearerauth.token.error.BearerTokenException;
@@ -11,8 +12,10 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.security.Principal;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
@@ -35,7 +38,7 @@ public class ServletBearerAuthenticationFilter implements Filter {
         HttpServletResponse res = (HttpServletResponse) response;
         try {
             this.bearerAuthenticationHandler.handle(new ServletHttpExchange(req)).toCompletableFuture().get();
-            chain.doFilter(request, response);
+            chain.doFilter(new AuthorizedRequest(req), response);
         }
         catch (ExecutionException ex) {
             Throwable cause = ex.getCause();
@@ -78,6 +81,69 @@ public class ServletBearerAuthenticationFilter implements Filter {
         @Override
         public void setAttribute(String attributeName, Object attributeValue) {
             httpServletRequest.setAttribute(attributeName, attributeValue);
+        }
+
+    }
+
+    private static class AuthorizedRequest extends HttpServletRequestWrapper {
+
+        private AuthorizedRequest(HttpServletRequest request) {
+            super(request);
+        }
+
+        @Override
+        public String getAuthType() {
+            return "BEARER";
+        }
+
+        @Override
+        public String getRemoteUser() {
+            AuthorizationContext authorizationContext = getAuthorizationContext();
+            if (authorizationContext != null) {
+                return (String) authorizationContext.getAttributes().getOrDefault("sub", "unknown");
+            }
+            return null;
+        }
+
+        @Override
+        public boolean isUserInRole(String role) {
+            AuthorizationContext authorizationContext = getAuthorizationContext();
+            if (authorizationContext != null) {
+                return authorizationContext.getScopeValues().contains(role);
+            }
+            return false;
+        }
+
+        @Override
+        public Principal getUserPrincipal() {
+            String user = getRemoteUser();
+            if (user != null) {
+                return new AuthorizedPrincipal(user);
+            }
+            return null;
+        }
+
+        private AuthorizationContext getAuthorizationContext() {
+            Object authorizationContext = getAttribute(BearerAuthenticationHandler.AUTHORIZATION_CONTEXT_ATTRIBUTE);
+            if ((authorizationContext instanceof AuthorizationContext)) {
+                return (AuthorizationContext) authorizationContext;
+            }
+            return null;
+        }
+
+    }
+
+    private static class AuthorizedPrincipal implements Principal {
+
+        private final String name;
+
+        private AuthorizedPrincipal(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String getName() {
+            return this.name;
         }
 
     }
