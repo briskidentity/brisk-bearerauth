@@ -3,9 +3,9 @@ plugins {
 }
 
 dependencies {
-    testImplementation(platform("org.junit:junit-bom:$testLibraryVersions.junit"))
-    testImplementation("org.assertj:assertj-core:$testLibraryVersions.assertj")
-    testImplementation("org.mockito:mockito-core:$testLibraryVersions.mockito")
+    testImplementation(platform("org.junit:junit-bom"))
+    testImplementation("org.assertj:assertj-core")
+    testImplementation("org.mockito:mockito-core")
     testImplementation("org.junit.jupiter:junit-jupiter-api")
 
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")

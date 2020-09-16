@@ -1,12 +1,9 @@
-import static org.briskidentity.bearerauth.build.DependencyVersionHelper.isStable;
+import static org.briskidentity.bearerauth.build.DependencyVersionHelper.isStable
 
 plugins {
     id("java")
     id("com.github.ben-manes.versions")
-    id("org.briskidentity.bearerauth.conventions")
 }
-
-//apply(from: "gradle/dependency-versions.gradle")
 
 repositories {
     mavenCentral()

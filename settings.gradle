@@ -1,17 +1,16 @@
 buildscript {
-    apply(from: "gradle/dependency-versions.gradle")
-
     repositories {
         gradlePluginPortal()
     }
 
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:$testLibraryVersions.springBoot")
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.3.+")
     }
 }
 
 rootProject.name = "brisk-bearerauth"
 
+include("brisk-bearerauth-dependencies")
 include("brisk-bearerauth-core")
 include("brisk-bearerauth-servlet")
 include("brisk-bearerauth-spring")

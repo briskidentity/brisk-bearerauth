@@ -1,6 +1,4 @@
-apply(from: "$rootDir.parentFile/gradle/dependency-versions.gradle")
 apply(plugin: "groovy-gradle-plugin")
-apply(plugin: "java-gradle-plugin")
 apply(plugin: "com.github.ben-manes.versions")
 
 repositories {
@@ -9,10 +7,10 @@ repositories {
 }
 
 dependencies {
-    implementation("com.github.ben-manes:gradle-versions-plugin:$pluginVersions.versions")
+    implementation("com.github.ben-manes:gradle-versions-plugin")
 
-    testImplementation(platform("org.junit:junit-bom:$testLibraryVersions.junit"))
-    testImplementation("org.assertj:assertj-core:$testLibraryVersions.assertj")
+    testImplementation(platform("org.junit:junit-bom"))
+    testImplementation("org.assertj:assertj-core")
     testImplementation("org.junit.jupiter:junit-jupiter-api")
 
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
@@ -24,15 +22,6 @@ dependencyLocking {
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
-}
-
-gradlePlugin {
-    plugins {
-        conventionsPlugin {
-            id = "org.briskidentity.bearerauth.conventions"
-            implementationClass = "org.briskidentity.bearerauth.build.ConventionsPlugin"
-        }
-    }
 }
 
 test {
