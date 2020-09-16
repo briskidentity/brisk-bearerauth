@@ -1,6 +1,7 @@
 package org.briskidentity.bearerauth.spring.webflux;
 
 import org.briskidentity.bearerauth.BearerAuthenticationHandler;
+import org.briskidentity.bearerauth.context.AuthorizationContext;
 import org.briskidentity.bearerauth.http.HttpExchange;
 import org.briskidentity.bearerauth.http.WwwAuthenticateBuilder;
 import org.briskidentity.bearerauth.token.error.BearerTokenException;
@@ -8,10 +9,12 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.web.server.ServerWebExchange;
+import org.springframework.web.server.ServerWebExchangeDecorator;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
+import java.security.Principal;
 import java.util.Objects;
 
 public class WebFluxBearerAuthenticationFilter implements WebFilter {
@@ -26,7 +29,7 @@ public class WebFluxBearerAuthenticationFilter implements WebFilter {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         return Mono.fromCompletionStage(this.bearerAuthenticationHandler.handle(new WebFluxHttpExchange(exchange)))
-                .then(chain.filter(exchange))
+                .then(chain.filter(new AuthorizedExchange(exchange)))
                 .onErrorResume(BearerTokenException.class, ex -> {
                     String wwwAuthenticate = WwwAuthenticateBuilder.from(ex).build();
                     ServerHttpResponse response = exchange.getResponse();
@@ -62,6 +65,42 @@ public class WebFluxBearerAuthenticationFilter implements WebFilter {
         @Override
         public void setAttribute(String attributeName, Object attributeValue) {
             serverWebExchange.getAttributes().put(attributeName, attributeValue);
+        }
+
+    }
+
+    private static class AuthorizedExchange extends ServerWebExchangeDecorator {
+
+        private AuthorizedExchange(ServerWebExchange delegate) {
+            super(delegate);
+        }
+
+        @Override
+        public <T extends Principal> Mono<T> getPrincipal() {
+            AuthorizationContext authorizationContext =
+                    getAttribute(BearerAuthenticationHandler.AUTHORIZATION_CONTEXT_ATTRIBUTE);
+            if (authorizationContext == null) {
+                return null;
+            }
+            String subject = (String) authorizationContext.getAttributes().getOrDefault("sub", "unknown");
+            @SuppressWarnings("unchecked")
+            Mono<T> principal = (Mono<T>) Mono.just(new AuthorizedPrincipal(subject));
+            return principal;
+        }
+
+    }
+
+    private static class AuthorizedPrincipal implements Principal {
+
+        private final String name;
+
+        private AuthorizedPrincipal(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String getName() {
+            return this.name;
         }
 
     }
