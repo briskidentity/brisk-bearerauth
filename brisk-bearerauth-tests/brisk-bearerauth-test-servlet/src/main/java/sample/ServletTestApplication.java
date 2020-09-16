@@ -2,7 +2,11 @@ package sample;
 
 import org.briskidentity.bearerauth.BearerAuthenticationHandler;
 import org.briskidentity.bearerauth.context.AuthorizationContext;
+import org.briskidentity.bearerauth.context.AuthorizationContextResolver;
 import org.briskidentity.bearerauth.context.MapAuthorizationContextResolver;
+import org.briskidentity.bearerauth.context.validation.AuthorizationContextValidator;
+import org.briskidentity.bearerauth.context.validation.DefaultAuthorizationContextValidator;
+import org.briskidentity.bearerauth.context.validation.ScopeMapping;
 import org.briskidentity.bearerauth.servlet.ServletBearerAuthenticationFilter;
 import org.briskidentity.bearerauth.token.BearerToken;
 import org.eclipse.jetty.server.Server;
@@ -16,9 +20,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ServletTestApplication {
@@ -38,12 +44,20 @@ public class ServletTestApplication {
 
     private static ServletBearerAuthenticationFilter bearerAuthenticationFilter() {
         Map<BearerToken, AuthorizationContext> authorizationContexts = new HashMap<>();
-        authorizationContexts.put(new BearerToken("valid"),
+        authorizationContexts.put(new BearerToken("valid_token"),
+                new AuthorizationContext(Collections.singleton("scope:read"), Instant.MAX, Collections.emptyMap()));
+        authorizationContexts.put(new BearerToken("token_expired"),
+                new AuthorizationContext(Collections.singleton("scope:read"), Instant.MIN, Collections.emptyMap()));
+        authorizationContexts.put(new BearerToken("insufficient_scope"),
                 new AuthorizationContext(Collections.emptySet(), Instant.MAX, Collections.emptyMap()));
-        authorizationContexts.put(new BearerToken("expired"),
-                new AuthorizationContext(Collections.emptySet(), Instant.MIN, Collections.emptyMap()));
+        AuthorizationContextResolver authorizationContextResolver =
+                new MapAuthorizationContextResolver(authorizationContexts);
+        List<ScopeMapping> scopeMappings = new ArrayList<>();
+        scopeMappings.add(new ScopeMapping("/resource", "GET", Collections.singleton("scope:read")));
+        AuthorizationContextValidator authorizationContextValidator = new DefaultAuthorizationContextValidator(
+                scopeMappings);
         BearerAuthenticationHandler bearerAuthenticationHandler = BearerAuthenticationHandler.builder(
-                new MapAuthorizationContextResolver(authorizationContexts)).build();
+                authorizationContextResolver).authorizationContextValidator(authorizationContextValidator).build();
         return new ServletBearerAuthenticationFilter(bearerAuthenticationHandler);
     }
 
