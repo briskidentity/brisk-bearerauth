@@ -1,10 +1,12 @@
 buildscript {
+    apply(from: "$rootDir.parentFile/gradle/dependency-versions.gradle")
+
     repositories {
         gradlePluginPortal()
     }
 
     dependencies {
-        classpath("com.github.ben-manes:gradle-versions-plugin:+")
+        classpath("com.github.ben-manes:gradle-versions-plugin:$pluginVersions.versions")
     }
 }
 

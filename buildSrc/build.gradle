@@ -1,5 +1,9 @@
-apply(plugin: "groovy-gradle-plugin")
-apply(plugin: "com.github.ben-manes.versions")
+plugins {
+    id("groovy-gradle-plugin")
+    id("com.github.ben-manes.versions")
+}
+
+apply(from: "$rootDir.parentFile/gradle/dependency-versions.gradle")
 
 repositories {
     mavenCentral()
@@ -7,10 +11,10 @@ repositories {
 }
 
 dependencies {
-    implementation("com.github.ben-manes:gradle-versions-plugin")
+    implementation("com.github.ben-manes:gradle-versions-plugin:$pluginVersions.versions")
 
-    testImplementation(platform("org.junit:junit-bom"))
-    testImplementation("org.assertj:assertj-core")
+    testImplementation(platform("org.junit:junit-bom:$testLibraryVersions.junit"))
+    testImplementation("org.assertj:assertj-core:$testLibraryVersions.assertj")
     testImplementation("org.junit.jupiter:junit-jupiter-api")
 
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")

@@ -6,6 +6,22 @@ plugins {
 
 group = "org.briskidentity.bearerauth"
 
+configurations {
+    internal {
+        visible = false
+        canBeConsumed = false
+        canBeResolved = false
+    }
+    compileClasspath.extendsFrom(internal)
+    runtimeClasspath.extendsFrom(internal)
+    testCompileClasspath.extendsFrom(internal)
+    testRuntimeClasspath.extendsFrom(internal)
+}
+
+dependencies {
+    internal(platform(project(":brisk-bearerauth-dependencies")))
+}
+
 java {
     withJavadocJar()
     withSourcesJar()
@@ -15,6 +31,14 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
             from(components.java)
+            versionMapping {
+                usage("java-api") {
+                    fromResolutionResult()
+                }
+                usage("java-runtime") {
+                    fromResolutionResult()
+                }
+            }
             pom {
                 licenses {
                     license {

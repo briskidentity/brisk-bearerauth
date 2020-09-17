@@ -21,9 +21,6 @@ dependencies {
     webFluxSupportApi(project(":brisk-bearerauth-core"))
     webFluxSupportApi("org.springframework:spring-webflux")
 
-    implementation(platform("org.springframework:spring-framework-bom"))
-
-    testImplementation(platform("org.junit:junit-bom"))
     testImplementation("org.assertj:assertj-core")
     testImplementation("org.junit.jupiter:junit-jupiter-api")
 

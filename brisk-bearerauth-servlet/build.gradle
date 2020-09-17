@@ -7,7 +7,6 @@ dependencies {
 
     compileOnly("jakarta.servlet:jakarta.servlet-api")
 
-    testImplementation(platform("org.junit:junit-bom"))
     testImplementation("org.assertj:assertj-core")
     testImplementation("org.junit.jupiter:junit-jupiter-api")
 
