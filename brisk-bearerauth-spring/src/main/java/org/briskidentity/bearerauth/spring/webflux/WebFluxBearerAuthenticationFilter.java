@@ -77,30 +77,17 @@ public class WebFluxBearerAuthenticationFilter implements WebFilter {
 
         @Override
         public <T extends Principal> Mono<T> getPrincipal() {
-            AuthorizationContext authorizationContext =
-                    getAttribute(BearerAuthenticationHandler.AUTHORIZATION_CONTEXT_ATTRIBUTE);
-            if (authorizationContext == null) {
-                return null;
-            }
-            String subject = (String) authorizationContext.getAttributes().getOrDefault("sub", "unknown");
             @SuppressWarnings("unchecked")
-            Mono<T> principal = (Mono<T>) Mono.just(new AuthorizedPrincipal(subject));
+            Mono<T> principal = (Mono<T>) Mono.justOrEmpty(getAuthorizationContext());
             return principal;
         }
 
-    }
-
-    private static class AuthorizedPrincipal implements Principal {
-
-        private final String name;
-
-        private AuthorizedPrincipal(String name) {
-            this.name = name;
-        }
-
-        @Override
-        public String getName() {
-            return this.name;
+        private AuthorizationContext getAuthorizationContext() {
+            Object authorizationContext = getAttribute(BearerAuthenticationHandler.AUTHORIZATION_CONTEXT_ATTRIBUTE);
+            if ((authorizationContext instanceof AuthorizationContext)) {
+                return (AuthorizationContext) authorizationContext;
+            }
+            return null;
         }
 
     }

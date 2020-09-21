@@ -3,6 +3,7 @@ package org.briskidentity.bearerauth.context;
 import org.briskidentity.bearerauth.token.BearerToken;
 
 import java.io.Serializable;
+import java.security.Principal;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.Map;
@@ -11,7 +12,7 @@ import java.util.Set;
 /**
  * Representation of authorization context attached to a {@link BearerToken}.
  */
-public class AuthorizationContext implements Serializable {
+public class AuthorizationContext implements Principal, Serializable {
 
     private final Set<String> scopeValues;
 
@@ -64,6 +65,12 @@ public class AuthorizationContext implements Serializable {
         @SuppressWarnings("unchecked")
         T attribute = (T) this.attributes.get(name);
         return attribute;
+    }
+
+    @Override
+    public String getName() {
+        // TODO figure out how to handle principal name
+        return (String) this.attributes.getOrDefault("sub", "unknown");
     }
 
 }

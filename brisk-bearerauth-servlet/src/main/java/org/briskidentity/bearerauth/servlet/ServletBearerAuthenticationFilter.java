@@ -99,28 +99,24 @@ public class ServletBearerAuthenticationFilter implements Filter {
         @Override
         public String getRemoteUser() {
             AuthorizationContext authorizationContext = getAuthorizationContext();
-            if (authorizationContext != null) {
-                return (String) authorizationContext.getAttributes().getOrDefault("sub", "unknown");
+            if (authorizationContext == null) {
+                return null;
             }
-            return null;
+            return authorizationContext.getName();
         }
 
         @Override
         public boolean isUserInRole(String role) {
             AuthorizationContext authorizationContext = getAuthorizationContext();
-            if (authorizationContext != null) {
-                return authorizationContext.getScopeValues().contains(role);
+            if (authorizationContext == null) {
+                return false;
             }
-            return false;
+            return authorizationContext.getScopeValues().contains(role);
         }
 
         @Override
         public Principal getUserPrincipal() {
-            String user = getRemoteUser();
-            if (user != null) {
-                return new AuthorizedPrincipal(user);
-            }
-            return null;
+            return getAuthorizationContext();
         }
 
         private AuthorizationContext getAuthorizationContext() {
@@ -129,21 +125,6 @@ public class ServletBearerAuthenticationFilter implements Filter {
                 return (AuthorizationContext) authorizationContext;
             }
             return null;
-        }
-
-    }
-
-    private static class AuthorizedPrincipal implements Principal {
-
-        private final String name;
-
-        private AuthorizedPrincipal(String name) {
-            this.name = name;
-        }
-
-        @Override
-        public String getName() {
-            return this.name;
         }
 
     }
