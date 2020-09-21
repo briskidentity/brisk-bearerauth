@@ -1,14 +1,14 @@
 import org.springframework.boot.gradle.plugin.SpringBootPlugin
 
 buildscript {
-    apply(from: "$rootDir/gradle/dependency-versions.gradle")
+    apply(from: "${rootDir}/gradle/dependency-versions.gradle")
 
     repositories {
         gradlePluginPortal()
     }
 
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:$testLibraryVersions.springBoot")
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${testLibraryVersions.springBoot}")
     }
 }
 

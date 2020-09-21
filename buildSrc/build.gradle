@@ -3,25 +3,25 @@ plugins {
     id("com.github.ben-manes.versions")
 }
 
-apply(from: "$rootDir.parentFile/gradle/dependency-versions.gradle")
+apply(from: "${rootDir.parentFile}/gradle/dependency-versions.gradle")
 
 repositories {
     mavenCentral()
     gradlePluginPortal()
 }
 
-dependencies {
-    implementation("com.github.ben-manes:gradle-versions-plugin:$pluginVersions.versions")
+dependencyLocking {
+    lockAllConfigurations()
+}
 
-    testImplementation(platform("org.junit:junit-bom:$testLibraryVersions.junit"))
-    testImplementation("org.assertj:assertj-core:$testLibraryVersions.assertj")
+dependencies {
+    implementation("com.github.ben-manes:gradle-versions-plugin:${pluginVersions.versions}")
+
+    testImplementation(platform("org.junit:junit-bom:${testLibraryVersions.junit}"))
+    testImplementation("org.assertj:assertj-core:${testLibraryVersions.assertj}")
     testImplementation("org.junit.jupiter:junit-jupiter-api")
 
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
-}
-
-dependencyLocking {
-    lockAllConfigurations()
 }
 
 java {

@@ -5,9 +5,7 @@ include("brisk-bearerauth-core")
 include("brisk-bearerauth-servlet")
 include("brisk-bearerauth-spring")
 
-file("$rootDir/brisk-bearerauth-tests").eachDirMatch(~/brisk-bearerauth-test-.*/) {
+file("${rootDir}/brisk-bearerauth-tests").eachDirMatch(~/brisk-bearerauth-test-.*/) {
     include(it.name)
     project(":${it.name}").projectDir = it
 }
-
-enableFeaturePreview("ONE_LOCKFILE_PER_PROJECT")
