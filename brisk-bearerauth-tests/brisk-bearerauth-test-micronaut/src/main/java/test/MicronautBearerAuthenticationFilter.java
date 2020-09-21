@@ -1,11 +1,16 @@
 package test;
 
+import io.micronaut.http.HttpAttributes;
+import io.micronaut.http.HttpHeaders;
 import io.micronaut.http.HttpRequest;
+import io.micronaut.http.HttpResponse;
+import io.micronaut.http.HttpStatus;
 import io.micronaut.http.MutableHttpResponse;
 import io.micronaut.http.annotation.Filter;
 import io.micronaut.http.filter.OncePerRequestHttpServerFilter;
 import io.micronaut.http.filter.ServerFilterChain;
 import io.reactivex.Completable;
+import io.reactivex.Flowable;
 import org.briskidentity.bearerauth.BearerAuthenticationHandler;
 import org.briskidentity.bearerauth.context.AuthorizationContext;
 import org.briskidentity.bearerauth.context.AuthorizationContextResolver;
@@ -14,7 +19,9 @@ import org.briskidentity.bearerauth.context.validation.AuthorizationContextValid
 import org.briskidentity.bearerauth.context.validation.DefaultAuthorizationContextValidator;
 import org.briskidentity.bearerauth.context.validation.ScopeMapping;
 import org.briskidentity.bearerauth.http.HttpExchange;
+import org.briskidentity.bearerauth.http.WwwAuthenticateBuilder;
 import org.briskidentity.bearerauth.token.BearerToken;
+import org.briskidentity.bearerauth.token.error.BearerTokenException;
 import org.reactivestreams.Publisher;
 
 import java.time.Instant;
@@ -51,7 +58,18 @@ public class MicronautBearerAuthenticationFilter extends OncePerRequestHttpServe
     public Publisher<MutableHttpResponse<?>> doFilterOnce(HttpRequest<?> request, ServerFilterChain chain) {
         return Completable.fromFuture(
                 this.bearerAuthenticationHandler.handle(new MicronautHttpExchange(request)).toCompletableFuture())
-                .andThen(chain.proceed(request));
+                .andThen(chain.proceed(request))
+                .onErrorResumeNext(th -> {
+                    Throwable cause = th.getCause();
+                    if (!(cause instanceof BearerTokenException)) {
+                        return Flowable.error(cause);
+                    }
+                    BearerTokenException ex = (BearerTokenException) cause;
+                    String wwwAuthenticate = WwwAuthenticateBuilder.from(ex).build();
+                    MutableHttpResponse<Object> response = HttpResponse.status(HttpStatus.valueOf(ex.getStatus()));
+                    response.getHeaders().set(HttpHeaders.WWW_AUTHENTICATE, wwwAuthenticate);
+                    return Flowable.just(response);
+                });
     }
 
     private static class MicronautHttpExchange implements HttpExchange {
@@ -80,6 +98,9 @@ public class MicronautBearerAuthenticationFilter extends OncePerRequestHttpServe
         @Override
         public void setAttribute(String attributeName, Object attributeValue) {
             this.httpRequest.setAttribute(attributeName, attributeValue);
+            if (attributeValue instanceof AuthorizationContext) {
+                this.httpRequest.setAttribute(HttpAttributes.PRINCIPAL, attributeValue);
+            }
         }
 
     }
