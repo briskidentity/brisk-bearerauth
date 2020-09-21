@@ -9,7 +9,6 @@ import io.micronaut.http.MutableHttpResponse;
 import io.micronaut.http.annotation.Filter;
 import io.micronaut.http.filter.OncePerRequestHttpServerFilter;
 import io.micronaut.http.filter.ServerFilterChain;
-import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import org.briskidentity.bearerauth.BearerAuthenticationHandler;
 import org.briskidentity.bearerauth.context.AuthorizationContext;
@@ -56,9 +55,12 @@ public class MicronautBearerAuthenticationFilter extends OncePerRequestHttpServe
 
     @Override
     public Publisher<MutableHttpResponse<?>> doFilterOnce(HttpRequest<?> request, ServerFilterChain chain) {
-        return Completable.fromFuture(
+        return Flowable.fromFuture(
                 this.bearerAuthenticationHandler.handle(new MicronautHttpExchange(request)).toCompletableFuture())
-                .andThen(chain.proceed(request))
+                .flatMap(authorizationContext -> {
+                    request.setAttribute(HttpAttributes.PRINCIPAL, authorizationContext);
+                    return chain.proceed(request);
+                })
                 .onErrorResumeNext(th -> {
                     Throwable cause = th.getCause();
                     if (!(cause instanceof BearerTokenException)) {
@@ -98,9 +100,6 @@ public class MicronautBearerAuthenticationFilter extends OncePerRequestHttpServe
         @Override
         public void setAttribute(String attributeName, Object attributeValue) {
             this.httpRequest.setAttribute(attributeName, attributeValue);
-            if (attributeValue instanceof AuthorizationContext) {
-                this.httpRequest.setAttribute(HttpAttributes.PRINCIPAL, attributeValue);
-            }
         }
 
     }

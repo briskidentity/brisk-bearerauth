@@ -37,8 +37,9 @@ public class ServletBearerAuthenticationFilter implements Filter {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
         try {
-            this.bearerAuthenticationHandler.handle(new ServletHttpExchange(req)).toCompletableFuture().get();
-            chain.doFilter(new AuthorizedRequest(req), response);
+            AuthorizationContext authorizationContext = this.bearerAuthenticationHandler.handle(
+                    new ServletHttpExchange(req)).toCompletableFuture().get();
+            chain.doFilter(new AuthorizedRequest(req, authorizationContext), response);
         }
         catch (ExecutionException ex) {
             Throwable cause = ex.getCause();
@@ -87,8 +88,11 @@ public class ServletBearerAuthenticationFilter implements Filter {
 
     private static class AuthorizedRequest extends HttpServletRequestWrapper {
 
-        private AuthorizedRequest(HttpServletRequest request) {
+        private final AuthorizationContext authorizationContext;
+
+        private AuthorizedRequest(HttpServletRequest request, AuthorizationContext authorizationContext) {
             super(request);
+            this.authorizationContext = authorizationContext;
         }
 
         @Override
@@ -98,33 +102,17 @@ public class ServletBearerAuthenticationFilter implements Filter {
 
         @Override
         public String getRemoteUser() {
-            AuthorizationContext authorizationContext = getAuthorizationContext();
-            if (authorizationContext == null) {
-                return null;
-            }
-            return authorizationContext.getName();
+            return this.authorizationContext.getName();
         }
 
         @Override
         public boolean isUserInRole(String role) {
-            AuthorizationContext authorizationContext = getAuthorizationContext();
-            if (authorizationContext == null) {
-                return false;
-            }
-            return authorizationContext.getScopeValues().contains(role);
+            return this.authorizationContext.getScopeValues().contains(role);
         }
 
         @Override
         public Principal getUserPrincipal() {
-            return getAuthorizationContext();
-        }
-
-        private AuthorizationContext getAuthorizationContext() {
-            Object authorizationContext = getAttribute(BearerAuthenticationHandler.AUTHORIZATION_CONTEXT_ATTRIBUTE);
-            if ((authorizationContext instanceof AuthorizationContext)) {
-                return (AuthorizationContext) authorizationContext;
-            }
-            return null;
+            return this.authorizationContext;
         }
 
     }

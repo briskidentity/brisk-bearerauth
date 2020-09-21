@@ -29,7 +29,7 @@ public class WebFluxBearerAuthenticationFilter implements WebFilter {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         return Mono.fromCompletionStage(this.bearerAuthenticationHandler.handle(new WebFluxHttpExchange(exchange)))
-                .then(chain.filter(new AuthorizedExchange(exchange)))
+                .flatMap(authorizationContext -> chain.filter(new AuthorizedExchange(exchange, authorizationContext)))
                 .onErrorResume(BearerTokenException.class, ex -> {
                     String wwwAuthenticate = WwwAuthenticateBuilder.from(ex).build();
                     ServerHttpResponse response = exchange.getResponse();
@@ -71,23 +71,17 @@ public class WebFluxBearerAuthenticationFilter implements WebFilter {
 
     private static class AuthorizedExchange extends ServerWebExchangeDecorator {
 
-        private AuthorizedExchange(ServerWebExchange delegate) {
+        private final AuthorizationContext authorizationContext;
+
+        private AuthorizedExchange(ServerWebExchange delegate, AuthorizationContext authorizationContext) {
             super(delegate);
+            this.authorizationContext = authorizationContext;
         }
 
         @Override
+        @SuppressWarnings("unchecked")
         public <T extends Principal> Mono<T> getPrincipal() {
-            @SuppressWarnings("unchecked")
-            Mono<T> principal = (Mono<T>) Mono.justOrEmpty(getAuthorizationContext());
-            return principal;
-        }
-
-        private AuthorizationContext getAuthorizationContext() {
-            Object authorizationContext = getAttribute(BearerAuthenticationHandler.AUTHORIZATION_CONTEXT_ATTRIBUTE);
-            if ((authorizationContext instanceof AuthorizationContext)) {
-                return (AuthorizationContext) authorizationContext;
-            }
-            return null;
+            return (Mono<T>) Mono.just(this.authorizationContext);
         }
 
     }

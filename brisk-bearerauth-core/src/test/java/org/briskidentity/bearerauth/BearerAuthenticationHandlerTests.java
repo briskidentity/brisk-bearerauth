@@ -21,9 +21,7 @@ import java.util.concurrent.CompletableFuture;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNullPointerException;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
 
 /**
  * Tests for {@link BearerAuthenticationHandler}.
@@ -106,9 +104,7 @@ class BearerAuthenticationHandlerTests {
         given(this.bearerTokenExtractor.extract(any())).willReturn(bearerToken);
         given(this.authorizationContextResolver.resolve(bearerToken))
                 .willReturn(CompletableFuture.completedFuture(authorizationContext));
-        assertThat(this.bearerAuthenticationHandler.handle(httpExchange)).isCompleted();
-        verify(this.httpExchange).setAttribute(eq(BearerAuthenticationHandler.AUTHORIZATION_CONTEXT_ATTRIBUTE),
-                eq(authorizationContext));
+        assertThat(this.bearerAuthenticationHandler.handle(httpExchange)).isCompletedWithValue(authorizationContext);
     }
 
 }

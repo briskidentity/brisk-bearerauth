@@ -15,7 +15,6 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.WebRequest;
 
 import java.time.Instant;
@@ -35,8 +34,7 @@ public class SpringMvcTestApplication {
 
     @GetMapping(path = "/resource")
     public String greet(WebRequest webRequest) {
-        AuthorizationContext authorizationContext = (AuthorizationContext) webRequest.getAttribute(
-                BearerAuthenticationHandler.AUTHORIZATION_CONTEXT_ATTRIBUTE, RequestAttributes.SCOPE_REQUEST);
+        AuthorizationContext authorizationContext = (AuthorizationContext) webRequest.getUserPrincipal();
         System.out.println("authorizationContext{scope=" + String.join(",", authorizationContext.getScopeValues())
                 + ",expiry=" + authorizationContext.getExpiry() + "}");
         return "Hello World!";

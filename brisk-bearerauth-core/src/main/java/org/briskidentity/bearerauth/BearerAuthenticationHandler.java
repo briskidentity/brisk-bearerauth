@@ -1,5 +1,6 @@
 package org.briskidentity.bearerauth;
 
+import org.briskidentity.bearerauth.context.AuthorizationContext;
 import org.briskidentity.bearerauth.context.AuthorizationContextResolver;
 import org.briskidentity.bearerauth.context.validation.AuthorizationContextValidator;
 import org.briskidentity.bearerauth.context.validation.DefaultAuthorizationContextValidator;
@@ -17,8 +18,6 @@ import java.util.concurrent.CompletionStage;
  *
  */
 public class BearerAuthenticationHandler {
-
-    public static final String AUTHORIZATION_CONTEXT_ATTRIBUTE = BearerAuthenticationHandler.class.getName() + ".AUTHORIZATION_CONTEXT";
 
     private final BearerTokenExtractor bearerTokenExtractor;
 
@@ -48,11 +47,12 @@ public class BearerAuthenticationHandler {
 
     /**
      * @param httpExchange the HTTP exchange
+     * @return the completion stage of {@link AuthorizationContext}
      */
-    public CompletionStage<Void> handle(HttpExchange httpExchange) {
+    public CompletionStage<AuthorizationContext> handle(HttpExchange httpExchange) {
         BearerToken bearerToken = this.bearerTokenExtractor.extract(httpExchange);
         if (bearerToken == null) {
-            CompletableFuture<Void> result = new CompletableFuture<>();
+            CompletableFuture<AuthorizationContext> result = new CompletableFuture<>();
             result.completeExceptionally(new BearerTokenException());
             return result;
         }
@@ -61,8 +61,7 @@ public class BearerAuthenticationHandler {
                 throw new BearerTokenException(BearerTokenError.INVALID_TOKEN);
             }
             this.authorizationContextValidator.validate(authorizationContext, httpExchange);
-            httpExchange.setAttribute(AUTHORIZATION_CONTEXT_ATTRIBUTE, authorizationContext);
-            return null;
+            return authorizationContext;
         });
     }
 
