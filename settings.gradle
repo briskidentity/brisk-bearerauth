@@ -1,5 +1,6 @@
 rootProject.name = "brisk-bearerauth"
 
+include("brisk-bearerauth-bom")
 include("brisk-bearerauth-dependencies")
 include("brisk-bearerauth-core")
 include("brisk-bearerauth-servlet")

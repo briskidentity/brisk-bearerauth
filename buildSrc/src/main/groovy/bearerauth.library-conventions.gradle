@@ -1,10 +1,8 @@
 plugins {
     id("bearerauth.java-conventions")
+    id("bearerauth.publish-conventions")
     id("java-library")
-    id("maven-publish")
 }
-
-group = "org.briskidentity.bearerauth"
 
 configurations {
     internal {
@@ -38,20 +36,6 @@ publishing {
                 usage("java-runtime") {
                     fromResolutionResult()
                 }
-            }
-            pom {
-                licenses {
-                    license {
-                        name = "The Apache License, Version 2.0"
-                        url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
-                    }
-                }
-                scm {
-                    connection = "scm:git:git://github.com:briskidentity/brisk-bearerauth.git"
-                    developerConnection = "scm:git:ssh://git@github.com:briskidentity/brisk-bearerauth.git"
-                    url = "https://github.com/briskidentity/brisk-bearerauth"
-                }
-                // TODO customize POM
             }
         }
     }

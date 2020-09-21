@@ -1,0 +1,20 @@
+plugins {
+    id("bearerauth.publish-conventions")
+    id("java-platform")
+}
+
+dependencies {
+    constraints {
+        api(project(":brisk-bearerauth-core"))
+        api(project(":brisk-bearerauth-servlet"))
+        api(project(":brisk-bearerauth-spring"))
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from(components.javaPlatform)
+        }
+    }
+}

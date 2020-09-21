@@ -1,0 +1,26 @@
+plugins {
+    id("maven-publish")
+}
+
+group = "org.briskidentity.bearerauth"
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            pom {
+                licenses {
+                    license {
+                        name = "The Apache License, Version 2.0"
+                        url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+                    }
+                }
+                scm {
+                    connection = "scm:git:git://github.com:briskidentity/brisk-bearerauth.git"
+                    developerConnection = "scm:git:ssh://git@github.com:briskidentity/brisk-bearerauth.git"
+                    url = "https://github.com/briskidentity/brisk-bearerauth"
+                }
+                // TODO customize POM
+            }
+        }
+    }
+}
