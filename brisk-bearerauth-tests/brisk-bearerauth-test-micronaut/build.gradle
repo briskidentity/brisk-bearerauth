@@ -5,6 +5,10 @@ plugins {
 
 apply(from: "${rootDir}/gradle/dependency-versions.gradle")
 
+repositories {
+    jcenter()
+}
+
 dependencies {
     implementation(project(":brisk-bearerauth-core"))
     implementation(platform("io.micronaut:micronaut-bom:${testLibraryVersions.micronaut}"))
