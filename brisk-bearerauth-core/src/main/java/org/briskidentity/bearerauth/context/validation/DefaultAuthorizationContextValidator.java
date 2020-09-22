@@ -1,7 +1,7 @@
 package org.briskidentity.bearerauth.context.validation;
 
 import org.briskidentity.bearerauth.context.AuthorizationContext;
-import org.briskidentity.bearerauth.http.HttpExchange;
+import org.briskidentity.bearerauth.http.ProtectedResourceRequest;
 import org.briskidentity.bearerauth.token.error.BearerTokenError;
 import org.briskidentity.bearerauth.token.error.BearerTokenException;
 
@@ -46,21 +46,21 @@ public class DefaultAuthorizationContextValidator implements AuthorizationContex
     }
 
     @Override
-    public void validate(AuthorizationContext authorizationContext, HttpExchange httpExchange) {
+    public void validate(AuthorizationContext authorizationContext, ProtectedResourceRequest request) {
         if (this.clock.instant().isAfter(authorizationContext.getExpiry())) {
             throw new BearerTokenException(BearerTokenError.INVALID_TOKEN);
         }
-        if (!hasRequiredScope(httpExchange, authorizationContext.getScopeValues())) {
+        if (!hasRequiredScope(request, authorizationContext.getScopeValues())) {
             throw new BearerTokenException(BearerTokenError.INSUFFICIENT_SCOPE);
         }
         if (this.delegate != null) {
-            this.delegate.validate(authorizationContext, httpExchange);
+            this.delegate.validate(authorizationContext, request);
         }
     }
 
-    private boolean hasRequiredScope(HttpExchange httpExchange, Set<String> presentedScopeValues) {
+    private boolean hasRequiredScope(ProtectedResourceRequest request, Set<String> presentedScopeValues) {
         for (ScopeMapping scopeMapping : this.scopeMappings) {
-            if (pathMatches(scopeMapping, httpExchange) && methodMatches(scopeMapping, httpExchange)
+            if (pathMatches(scopeMapping, request) && methodMatches(scopeMapping, request)
                     && presentedScopeValues.containsAll(scopeMapping.getScopeValues())) {
                 return true;
             }
@@ -68,12 +68,12 @@ public class DefaultAuthorizationContextValidator implements AuthorizationContex
         return !this.denyIfNoMatch;
     }
 
-    private static boolean pathMatches(ScopeMapping scopeMapping, HttpExchange httpExchange) {
-        return antPathMatcher.matches(scopeMapping.getPathPattern(), httpExchange.getRequestPath());
+    private static boolean pathMatches(ScopeMapping scopeMapping, ProtectedResourceRequest request) {
+        return antPathMatcher.matches(scopeMapping.getPathPattern(), request.getRequestPath());
     }
 
-    private static boolean methodMatches(ScopeMapping scopeMapping, HttpExchange httpExchange) {
-        return (scopeMapping.getMethod() != null) && scopeMapping.getMethod().equals(httpExchange.getRequestMethod());
+    private static boolean methodMatches(ScopeMapping scopeMapping, ProtectedResourceRequest request) {
+        return (scopeMapping.getMethod() != null) && scopeMapping.getMethod().equals(request.getRequestMethod());
     }
 
 }

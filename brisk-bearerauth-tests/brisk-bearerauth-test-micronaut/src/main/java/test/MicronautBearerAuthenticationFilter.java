@@ -17,7 +17,7 @@ import org.briskidentity.bearerauth.context.MapAuthorizationContextResolver;
 import org.briskidentity.bearerauth.context.validation.AuthorizationContextValidator;
 import org.briskidentity.bearerauth.context.validation.DefaultAuthorizationContextValidator;
 import org.briskidentity.bearerauth.context.validation.ScopeMapping;
-import org.briskidentity.bearerauth.http.HttpExchange;
+import org.briskidentity.bearerauth.http.ProtectedResourceRequest;
 import org.briskidentity.bearerauth.http.WwwAuthenticateBuilder;
 import org.briskidentity.bearerauth.token.BearerToken;
 import org.briskidentity.bearerauth.token.error.BearerTokenException;
@@ -56,7 +56,7 @@ public class MicronautBearerAuthenticationFilter extends OncePerRequestHttpServe
     @Override
     public Publisher<MutableHttpResponse<?>> doFilterOnce(HttpRequest<?> request, ServerFilterChain chain) {
         return Flowable.fromFuture(
-                this.bearerAuthenticationHandler.handle(new MicronautHttpExchange(request)).toCompletableFuture())
+                this.bearerAuthenticationHandler.handle(new MicronautProtectedResourceRequest(request)).toCompletableFuture())
                 .flatMap(authorizationContext -> {
                     request.setAttribute(HttpAttributes.PRINCIPAL, authorizationContext);
                     return chain.proceed(request);
@@ -74,11 +74,11 @@ public class MicronautBearerAuthenticationFilter extends OncePerRequestHttpServe
                 });
     }
 
-    private static class MicronautHttpExchange implements HttpExchange {
+    private static class MicronautProtectedResourceRequest implements ProtectedResourceRequest {
 
         private final HttpRequest<?> httpRequest;
 
-        private MicronautHttpExchange(HttpRequest<?> httpRequest) {
+        private MicronautProtectedResourceRequest(HttpRequest<?> httpRequest) {
             this.httpRequest = httpRequest;
         }
 
@@ -93,13 +93,14 @@ public class MicronautBearerAuthenticationFilter extends OncePerRequestHttpServe
         }
 
         @Override
-        public String getRequestHeader(String headerName) {
-            return this.httpRequest.getHeaders().get(headerName);
+        public String getAuthorizationHeader() {
+            return this.httpRequest.getHeaders().getAuthorization().orElse(null);
         }
 
         @Override
-        public void setAttribute(String attributeName, Object attributeValue) {
-            this.httpRequest.setAttribute(attributeName, attributeValue);
+        @SuppressWarnings("unchecked")
+        public <T> T getNativeRequest() {
+            return (T) this.httpRequest;
         }
 
     }

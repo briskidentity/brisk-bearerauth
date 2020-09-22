@@ -3,7 +3,7 @@ package org.briskidentity.bearerauth;
 import org.briskidentity.bearerauth.context.AuthorizationContext;
 import org.briskidentity.bearerauth.context.AuthorizationContextResolver;
 import org.briskidentity.bearerauth.context.validation.AuthorizationContextValidator;
-import org.briskidentity.bearerauth.http.HttpExchange;
+import org.briskidentity.bearerauth.http.ProtectedResourceRequest;
 import org.briskidentity.bearerauth.token.BearerToken;
 import org.briskidentity.bearerauth.token.BearerTokenExtractor;
 import org.briskidentity.bearerauth.token.error.BearerTokenError;
@@ -40,7 +40,7 @@ class BearerAuthenticationHandlerTests {
     private AuthorizationContextValidator authorizationContextValidator;
 
     @Mock
-    private HttpExchange httpExchange;
+    private ProtectedResourceRequest protectedResourceRequest;
 
     private BearerAuthenticationHandler bearerAuthenticationHandler;
 
@@ -79,7 +79,7 @@ class BearerAuthenticationHandlerTests {
 
     @Test
     void handle_NoBearerToken_ShouldCompleteExceptionally() {
-        assertThat(this.bearerAuthenticationHandler.handle(this.httpExchange)).isCompletedExceptionally()
+        assertThat(this.bearerAuthenticationHandler.handle(this.protectedResourceRequest)).isCompletedExceptionally()
                 .hasFailedWithThrowableThat().isInstanceOf(BearerTokenException.class)
                 .hasFieldOrPropertyWithValue("error", null);
     }
@@ -87,10 +87,10 @@ class BearerAuthenticationHandlerTests {
     @Test
     void handle_NoAuthorizationContext_ShouldCompleteExceptionally() {
         BearerToken bearerToken = new BearerToken("secret");
-        given(this.httpExchange.getRequestHeader("Authorization")).willReturn(bearerToken.toString());
+        given(this.protectedResourceRequest.getAuthorizationHeader()).willReturn(bearerToken.toString());
         given(this.bearerTokenExtractor.extract(any())).willReturn(bearerToken);
         given(this.authorizationContextResolver.resolve(bearerToken)).willReturn(CompletableFuture.completedFuture(null));
-        assertThat(this.bearerAuthenticationHandler.handle(this.httpExchange)).isCompletedExceptionally()
+        assertThat(this.bearerAuthenticationHandler.handle(this.protectedResourceRequest)).isCompletedExceptionally()
                 .hasFailedWithThrowableThat().isInstanceOf(BearerTokenException.class)
                 .hasFieldOrPropertyWithValue("error", BearerTokenError.INVALID_TOKEN);
     }
@@ -100,11 +100,11 @@ class BearerAuthenticationHandlerTests {
         BearerToken bearerToken = new BearerToken("secret");
         AuthorizationContext authorizationContext = new AuthorizationContext(Collections.emptySet(), Instant.now(),
                 Collections.emptyMap());
-        given(this.httpExchange.getRequestHeader("Authorization")).willReturn(bearerToken.toString());
+        given(this.protectedResourceRequest.getAuthorizationHeader()).willReturn(bearerToken.toString());
         given(this.bearerTokenExtractor.extract(any())).willReturn(bearerToken);
         given(this.authorizationContextResolver.resolve(bearerToken))
                 .willReturn(CompletableFuture.completedFuture(authorizationContext));
-        assertThat(this.bearerAuthenticationHandler.handle(httpExchange)).isCompletedWithValue(authorizationContext);
+        assertThat(this.bearerAuthenticationHandler.handle(protectedResourceRequest)).isCompletedWithValue(authorizationContext);
     }
 
 }

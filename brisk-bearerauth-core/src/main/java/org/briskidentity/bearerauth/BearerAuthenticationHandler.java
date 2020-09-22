@@ -4,7 +4,7 @@ import org.briskidentity.bearerauth.context.AuthorizationContext;
 import org.briskidentity.bearerauth.context.AuthorizationContextResolver;
 import org.briskidentity.bearerauth.context.validation.AuthorizationContextValidator;
 import org.briskidentity.bearerauth.context.validation.DefaultAuthorizationContextValidator;
-import org.briskidentity.bearerauth.http.HttpExchange;
+import org.briskidentity.bearerauth.http.ProtectedResourceRequest;
 import org.briskidentity.bearerauth.token.BearerToken;
 import org.briskidentity.bearerauth.token.BearerTokenExtractor;
 import org.briskidentity.bearerauth.token.error.BearerTokenError;
@@ -46,11 +46,11 @@ public class BearerAuthenticationHandler {
     }
 
     /**
-     * @param httpExchange the HTTP exchange
+     * @param request the protected resource request
      * @return the completion stage of {@link AuthorizationContext}
      */
-    public CompletionStage<AuthorizationContext> handle(HttpExchange httpExchange) {
-        BearerToken bearerToken = this.bearerTokenExtractor.extract(httpExchange);
+    public CompletionStage<AuthorizationContext> handle(ProtectedResourceRequest request) {
+        BearerToken bearerToken = this.bearerTokenExtractor.extract(request);
         if (bearerToken == null) {
             CompletableFuture<AuthorizationContext> result = new CompletableFuture<>();
             result.completeExceptionally(new BearerTokenException());
@@ -60,7 +60,7 @@ public class BearerAuthenticationHandler {
             if (authorizationContext == null) {
                 throw new BearerTokenException(BearerTokenError.INVALID_TOKEN);
             }
-            this.authorizationContextValidator.validate(authorizationContext, httpExchange);
+            this.authorizationContextValidator.validate(authorizationContext, request);
             return authorizationContext;
         });
     }

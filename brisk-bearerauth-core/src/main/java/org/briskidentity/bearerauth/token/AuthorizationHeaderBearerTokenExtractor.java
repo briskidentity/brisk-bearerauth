@@ -1,6 +1,6 @@
 package org.briskidentity.bearerauth.token;
 
-import org.briskidentity.bearerauth.http.HttpExchange;
+import org.briskidentity.bearerauth.http.ProtectedResourceRequest;
 
 import java.util.Objects;
 
@@ -15,9 +15,9 @@ class AuthorizationHeaderBearerTokenExtractor implements BearerTokenExtractor {
     }
 
     @Override
-    public BearerToken extract(HttpExchange httpExchange) {
-        Objects.requireNonNull(httpExchange, "httpExchange must not be null");
-        String authorizationHeader = httpExchange.getRequestHeader("Authorization");
+    public BearerToken extract(ProtectedResourceRequest request) {
+        Objects.requireNonNull(request, "request must not be null");
+        String authorizationHeader = request.getAuthorizationHeader();
         if ((authorizationHeader == null) || !authorizationHeader.startsWith("Bearer ")) {
             return null;
         }

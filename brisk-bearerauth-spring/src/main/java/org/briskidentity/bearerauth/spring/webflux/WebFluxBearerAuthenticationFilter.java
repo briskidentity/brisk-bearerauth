@@ -2,7 +2,7 @@ package org.briskidentity.bearerauth.spring.webflux;
 
 import org.briskidentity.bearerauth.BearerAuthenticationHandler;
 import org.briskidentity.bearerauth.context.AuthorizationContext;
-import org.briskidentity.bearerauth.http.HttpExchange;
+import org.briskidentity.bearerauth.http.ProtectedResourceRequest;
 import org.briskidentity.bearerauth.http.WwwAuthenticateBuilder;
 import org.briskidentity.bearerauth.token.error.BearerTokenException;
 import org.springframework.http.HttpHeaders;
@@ -28,7 +28,7 @@ public class WebFluxBearerAuthenticationFilter implements WebFilter {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-        return Mono.fromCompletionStage(this.bearerAuthenticationHandler.handle(new WebFluxHttpExchange(exchange)))
+        return Mono.fromCompletionStage(this.bearerAuthenticationHandler.handle(new WebFluxProtectedResourceRequest(exchange)))
                 .flatMap(authorizationContext -> chain.filter(new AuthorizedExchange(exchange, authorizationContext)))
                 .onErrorResume(BearerTokenException.class, ex -> {
                     String wwwAuthenticate = WwwAuthenticateBuilder.from(ex).build();
@@ -39,11 +39,11 @@ public class WebFluxBearerAuthenticationFilter implements WebFilter {
                 });
     }
 
-    private static class WebFluxHttpExchange implements HttpExchange {
+    private static class WebFluxProtectedResourceRequest implements ProtectedResourceRequest {
 
         private final ServerWebExchange serverWebExchange;
 
-        private WebFluxHttpExchange(ServerWebExchange serverWebExchange) {
+        private WebFluxProtectedResourceRequest(ServerWebExchange serverWebExchange) {
             this.serverWebExchange = serverWebExchange;
         }
 
@@ -58,13 +58,14 @@ public class WebFluxBearerAuthenticationFilter implements WebFilter {
         }
 
         @Override
-        public String getRequestHeader(String headerName) {
-            return this.serverWebExchange.getRequest().getHeaders().getFirst(headerName);
+        public String getAuthorizationHeader() {
+            return this.serverWebExchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
         }
 
         @Override
-        public void setAttribute(String attributeName, Object attributeValue) {
-            serverWebExchange.getAttributes().put(attributeName, attributeValue);
+        @SuppressWarnings("unchecked")
+        public <T> T getNativeRequest() {
+            return (T) this.serverWebExchange;
         }
 
     }

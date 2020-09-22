@@ -2,7 +2,7 @@ package org.briskidentity.bearerauth.servlet;
 
 import org.briskidentity.bearerauth.BearerAuthenticationHandler;
 import org.briskidentity.bearerauth.context.AuthorizationContext;
-import org.briskidentity.bearerauth.http.HttpExchange;
+import org.briskidentity.bearerauth.http.ProtectedResourceRequest;
 import org.briskidentity.bearerauth.http.WwwAuthenticateBuilder;
 import org.briskidentity.bearerauth.token.error.BearerTokenException;
 
@@ -38,7 +38,7 @@ public class ServletBearerAuthenticationFilter implements Filter {
         HttpServletResponse res = (HttpServletResponse) response;
         try {
             AuthorizationContext authorizationContext = this.bearerAuthenticationHandler.handle(
-                    new ServletHttpExchange(req)).toCompletableFuture().get();
+                    new ServletProtectedResourceRequest(req)).toCompletableFuture().get();
             chain.doFilter(new AuthorizedRequest(req, authorizationContext), response);
         }
         catch (ExecutionException ex) {
@@ -56,11 +56,11 @@ public class ServletBearerAuthenticationFilter implements Filter {
         }
     }
 
-    private static class ServletHttpExchange implements HttpExchange {
+    private static class ServletProtectedResourceRequest implements ProtectedResourceRequest {
 
         private final HttpServletRequest httpServletRequest;
 
-        private ServletHttpExchange(HttpServletRequest httpServletRequest) {
+        private ServletProtectedResourceRequest(HttpServletRequest httpServletRequest) {
             this.httpServletRequest = httpServletRequest;
         }
 
@@ -75,13 +75,14 @@ public class ServletBearerAuthenticationFilter implements Filter {
         }
 
         @Override
-        public String getRequestHeader(String headerName) {
-            return this.httpServletRequest.getHeader(headerName);
+        public String getAuthorizationHeader() {
+            return this.httpServletRequest.getHeader("Authorization");
         }
 
         @Override
-        public void setAttribute(String attributeName, Object attributeValue) {
-            httpServletRequest.setAttribute(attributeName, attributeValue);
+        @SuppressWarnings("unchecked")
+        public <T> T getNativeRequest() {
+            return (T) this.httpServletRequest;
         }
 
     }
