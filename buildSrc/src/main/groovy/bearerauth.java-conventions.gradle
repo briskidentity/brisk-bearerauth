@@ -17,6 +17,10 @@ java {
     sourceCompatibility = JavaVersion.VERSION_1_8
 }
 
+compileJava {
+    options.compilerArgs += ["-Werror", "-Xlint:unchecked", "-Xlint:deprecation", "-Xlint:rawtypes", "-Xlint:varargs"]
+}
+
 test {
     maxHeapSize = "1g"
     useJUnitPlatform()
