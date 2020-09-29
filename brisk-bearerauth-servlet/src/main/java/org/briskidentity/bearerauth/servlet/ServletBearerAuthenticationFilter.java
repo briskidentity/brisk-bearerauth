@@ -108,6 +108,12 @@ public class ServletBearerAuthenticationFilter implements Filter {
 
         @Override
         public boolean isUserInRole(String role) {
+            if ("*".equals(role)) {
+                return false;
+            }
+            if ("**".equals(role)) {
+                return true;
+            }
             return this.authorizationContext.getScopeValues().contains(role);
         }
 
