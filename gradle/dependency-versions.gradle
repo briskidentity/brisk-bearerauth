@@ -4,7 +4,7 @@ ext {
     testLibraryVersions = [:]
 }
 
-libraryVersions.servletApi = "4.0.+"
+libraryVersions.servletApi = "3.1.+"
 libraryVersions.springFramework = "5.1.+"
 
 pluginVersions.versions = "+"

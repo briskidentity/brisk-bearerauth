@@ -8,6 +8,7 @@ import org.briskidentity.bearerauth.token.error.BearerTokenException;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -26,6 +27,10 @@ public class ServletBearerAuthenticationFilter implements Filter {
     public ServletBearerAuthenticationFilter(BearerAuthenticationHandler bearerAuthenticationHandler) {
         Objects.requireNonNull(bearerAuthenticationHandler, "bearerAuthenticationHandler must not be null");
         this.bearerAuthenticationHandler = bearerAuthenticationHandler;
+    }
+
+    @Override
+    public void init(FilterConfig filterConfig) {
     }
 
     @Override
@@ -54,6 +59,10 @@ public class ServletBearerAuthenticationFilter implements Filter {
         catch (InterruptedException ex) {
             throw new ServletException(ex);
         }
+    }
+
+    @Override
+    public void destroy() {
     }
 
     private static class ServletProtectedResourceRequest implements ProtectedResourceRequest {

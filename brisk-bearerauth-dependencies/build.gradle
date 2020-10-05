@@ -6,7 +6,7 @@ apply(from: "${rootDir}/gradle/dependency-versions.gradle")
 
 dependencies {
     constraints {
-        api("jakarta.servlet:jakarta.servlet-api:${libraryVersions.servletApi}")
+        api("javax.servlet:javax.servlet-api:${libraryVersions.servletApi}")
 
         api("ch.qos.logback:logback-classic:${testLibraryVersions.logback}")
         api("org.assertj:assertj-core:${testLibraryVersions.assertj}")
