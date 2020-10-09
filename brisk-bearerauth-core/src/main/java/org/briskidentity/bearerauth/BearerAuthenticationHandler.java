@@ -3,12 +3,11 @@ package org.briskidentity.bearerauth;
 import org.briskidentity.bearerauth.context.AuthorizationContext;
 import org.briskidentity.bearerauth.context.AuthorizationContextResolver;
 import org.briskidentity.bearerauth.context.validation.AuthorizationContextValidator;
-import org.briskidentity.bearerauth.context.validation.DefaultAuthorizationContextValidator;
 import org.briskidentity.bearerauth.http.ProtectedResourceRequest;
 import org.briskidentity.bearerauth.token.BearerToken;
 import org.briskidentity.bearerauth.token.BearerTokenExtractor;
-import org.briskidentity.bearerauth.token.error.BearerTokenError;
 import org.briskidentity.bearerauth.token.error.BearerTokenException;
+import org.briskidentity.bearerauth.util.CompletableFutureHelper;
 
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
@@ -52,17 +51,11 @@ public class BearerAuthenticationHandler {
     public CompletionStage<AuthorizationContext> handle(ProtectedResourceRequest request) {
         BearerToken bearerToken = this.bearerTokenExtractor.extract(request);
         if (bearerToken == null) {
-            CompletableFuture<AuthorizationContext> result = new CompletableFuture<>();
-            result.completeExceptionally(new BearerTokenException());
-            return result;
+            return CompletableFutureHelper.failedFuture(new BearerTokenException());
         }
-        return this.authorizationContextResolver.resolve(bearerToken).handle((authorizationContext, throwable) -> {
-            if (authorizationContext == null) {
-                throw new BearerTokenException(BearerTokenError.INVALID_TOKEN);
-            }
-            this.authorizationContextValidator.validate(authorizationContext, request);
-            return authorizationContext;
-        });
+        return this.authorizationContextResolver.resolve(bearerToken)
+                .thenCompose(authorizationContext -> this.authorizationContextValidator.validate(authorizationContext)
+                        .thenCompose(unused -> CompletableFuture.completedFuture(authorizationContext)));
     }
 
     public static class Builder {
@@ -71,7 +64,7 @@ public class BearerAuthenticationHandler {
 
         private BearerTokenExtractor bearerTokenExtractor = BearerTokenExtractor.authorizationHeader();
 
-        private AuthorizationContextValidator authorizationContextValidator = new DefaultAuthorizationContextValidator();
+        private AuthorizationContextValidator authorizationContextValidator = AuthorizationContextValidator.expiry();
 
         private Builder(AuthorizationContextResolver authorizationContextResolver) {
             Objects.requireNonNull(authorizationContextResolver, "authorizationContextResolver must not be null");

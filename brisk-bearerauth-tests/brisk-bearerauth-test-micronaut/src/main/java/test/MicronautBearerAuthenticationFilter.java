@@ -14,9 +14,6 @@ import org.briskidentity.bearerauth.BearerAuthenticationHandler;
 import org.briskidentity.bearerauth.context.AuthorizationContext;
 import org.briskidentity.bearerauth.context.AuthorizationContextResolver;
 import org.briskidentity.bearerauth.context.MapAuthorizationContextResolver;
-import org.briskidentity.bearerauth.context.validation.AuthorizationContextValidator;
-import org.briskidentity.bearerauth.context.validation.DefaultAuthorizationContextValidator;
-import org.briskidentity.bearerauth.context.validation.ScopeMapping;
 import org.briskidentity.bearerauth.http.ProtectedResourceRequest;
 import org.briskidentity.bearerauth.http.WwwAuthenticateBuilder;
 import org.briskidentity.bearerauth.token.BearerToken;
@@ -24,10 +21,8 @@ import org.briskidentity.bearerauth.token.error.BearerTokenException;
 import org.reactivestreams.Publisher;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Filter("/**")
@@ -45,12 +40,8 @@ public class MicronautBearerAuthenticationFilter extends OncePerRequestHttpServe
                 new AuthorizationContext(Collections.emptySet(), Instant.MAX, Collections.emptyMap()));
         AuthorizationContextResolver authorizationContextResolver =
                 new MapAuthorizationContextResolver(authorizationContexts);
-        List<ScopeMapping> scopeMappings = new ArrayList<>();
-        scopeMappings.add(new ScopeMapping("/resource", "GET", Collections.singleton("scope:read")));
-        AuthorizationContextValidator authorizationContextValidator = new DefaultAuthorizationContextValidator(
-                scopeMappings);
         this.bearerAuthenticationHandler = BearerAuthenticationHandler.builder(
-                authorizationContextResolver).authorizationContextValidator(authorizationContextValidator).build();
+                authorizationContextResolver).build();
     }
 
     @Override

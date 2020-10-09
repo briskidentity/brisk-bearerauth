@@ -1,6 +1,9 @@
 package org.briskidentity.bearerauth.context;
 
 import org.briskidentity.bearerauth.token.BearerToken;
+import org.briskidentity.bearerauth.token.error.BearerTokenError;
+import org.briskidentity.bearerauth.token.error.BearerTokenException;
+import org.briskidentity.bearerauth.util.CompletableFutureHelper;
 
 import java.util.Map;
 import java.util.Objects;
@@ -21,7 +24,11 @@ public class MapAuthorizationContextResolver implements AuthorizationContextReso
 
     @Override
     public CompletionStage<AuthorizationContext> resolve(BearerToken bearerToken) {
-        return CompletableFuture.completedFuture(this.authorizationContexts.get(bearerToken));
+        AuthorizationContext authorizationContext = this.authorizationContexts.get(bearerToken);
+        if (authorizationContext == null) {
+            return CompletableFutureHelper.failedFuture(new BearerTokenException(BearerTokenError.INVALID_TOKEN));
+        }
+        return CompletableFuture.completedFuture(authorizationContext);
     }
 
 }
