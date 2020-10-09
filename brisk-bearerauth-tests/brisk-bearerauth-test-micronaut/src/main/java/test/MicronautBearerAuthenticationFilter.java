@@ -11,37 +11,22 @@ import io.micronaut.http.filter.OncePerRequestHttpServerFilter;
 import io.micronaut.http.filter.ServerFilterChain;
 import io.reactivex.Flowable;
 import org.briskidentity.bearerauth.BearerAuthenticationHandler;
-import org.briskidentity.bearerauth.context.AuthorizationContext;
-import org.briskidentity.bearerauth.context.AuthorizationContextResolver;
-import org.briskidentity.bearerauth.context.MapAuthorizationContextResolver;
+import org.briskidentity.bearerauth.context.PropertiesAuthorizationContextResolver;
 import org.briskidentity.bearerauth.http.ProtectedResourceRequest;
 import org.briskidentity.bearerauth.http.WwwAuthenticateBuilder;
-import org.briskidentity.bearerauth.token.BearerToken;
 import org.briskidentity.bearerauth.token.error.BearerTokenException;
 import org.reactivestreams.Publisher;
 
-import java.time.Instant;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.IOException;
 
 @Filter("/**")
 public class MicronautBearerAuthenticationFilter extends OncePerRequestHttpServerFilter {
 
     private final BearerAuthenticationHandler bearerAuthenticationHandler;
 
-    public MicronautBearerAuthenticationFilter() {
-        Map<BearerToken, AuthorizationContext> authorizationContexts = new HashMap<>();
-        authorizationContexts.put(new BearerToken("valid_token"),
-                new AuthorizationContext(Collections.singleton("scope:read"), Instant.MAX, Collections.emptyMap()));
-        authorizationContexts.put(new BearerToken("token_expired"),
-                new AuthorizationContext(Collections.singleton("scope:read"), Instant.MIN, Collections.emptyMap()));
-        authorizationContexts.put(new BearerToken("insufficient_scope"),
-                new AuthorizationContext(Collections.emptySet(), Instant.MAX, Collections.emptyMap()));
-        AuthorizationContextResolver authorizationContextResolver =
-                new MapAuthorizationContextResolver(authorizationContexts);
+    public MicronautBearerAuthenticationFilter() throws IOException {
         this.bearerAuthenticationHandler = BearerAuthenticationHandler.builder(
-                authorizationContextResolver).build();
+                new PropertiesAuthorizationContextResolver()).build();
     }
 
     @Override

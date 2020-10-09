@@ -2,10 +2,8 @@ package sample;
 
 import org.briskidentity.bearerauth.BearerAuthenticationHandler;
 import org.briskidentity.bearerauth.context.AuthorizationContext;
-import org.briskidentity.bearerauth.context.AuthorizationContextResolver;
-import org.briskidentity.bearerauth.context.MapAuthorizationContextResolver;
+import org.briskidentity.bearerauth.context.PropertiesAuthorizationContextResolver;
 import org.briskidentity.bearerauth.servlet.ServletBearerAuthenticationFilter;
-import org.briskidentity.bearerauth.token.BearerToken;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
@@ -16,11 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.time.Instant;
-import java.util.Collections;
 import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.Map;
 
 public class ServletTestApplication {
 
@@ -37,18 +31,9 @@ public class ServletTestApplication {
         server.start();
     }
 
-    private static ServletBearerAuthenticationFilter bearerAuthenticationFilter() {
-        Map<BearerToken, AuthorizationContext> authorizationContexts = new HashMap<>();
-        authorizationContexts.put(new BearerToken("valid_token"),
-                new AuthorizationContext(Collections.singleton("scope:read"), Instant.MAX, Collections.emptyMap()));
-        authorizationContexts.put(new BearerToken("token_expired"),
-                new AuthorizationContext(Collections.singleton("scope:read"), Instant.MIN, Collections.emptyMap()));
-        authorizationContexts.put(new BearerToken("insufficient_scope"),
-                new AuthorizationContext(Collections.emptySet(), Instant.MAX, Collections.emptyMap()));
-        AuthorizationContextResolver authorizationContextResolver =
-                new MapAuthorizationContextResolver(authorizationContexts);
+    private static ServletBearerAuthenticationFilter bearerAuthenticationFilter() throws IOException {
         BearerAuthenticationHandler bearerAuthenticationHandler = BearerAuthenticationHandler.builder(
-                authorizationContextResolver).build();
+                new PropertiesAuthorizationContextResolver()).build();
         return new ServletBearerAuthenticationFilter(bearerAuthenticationHandler);
     }
 

@@ -2,10 +2,8 @@ package sample;
 
 import org.briskidentity.bearerauth.BearerAuthenticationHandler;
 import org.briskidentity.bearerauth.context.AuthorizationContext;
-import org.briskidentity.bearerauth.context.AuthorizationContextResolver;
-import org.briskidentity.bearerauth.context.MapAuthorizationContextResolver;
+import org.briskidentity.bearerauth.context.PropertiesAuthorizationContextResolver;
 import org.briskidentity.bearerauth.servlet.ServletBearerAuthenticationFilter;
-import org.briskidentity.bearerauth.token.BearerToken;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -14,10 +12,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 
-import java.time.Instant;
+import java.io.IOException;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 @SpringBootApplication
 @RestController
@@ -36,18 +32,9 @@ public class SpringMvcTestApplication {
     }
 
     @Bean
-    public FilterRegistrationBean<ServletBearerAuthenticationFilter> bearerAuthenticationFilter() {
-        Map<BearerToken, AuthorizationContext> authorizationContexts = new HashMap<>();
-        authorizationContexts.put(new BearerToken("valid_token"),
-                new AuthorizationContext(Collections.singleton("scope:read"), Instant.MAX, Collections.emptyMap()));
-        authorizationContexts.put(new BearerToken("token_expired"),
-                new AuthorizationContext(Collections.singleton("scope:read"), Instant.MIN, Collections.emptyMap()));
-        authorizationContexts.put(new BearerToken("insufficient_scope"),
-                new AuthorizationContext(Collections.emptySet(), Instant.MAX, Collections.emptyMap()));
-        AuthorizationContextResolver authorizationContextResolver =
-                new MapAuthorizationContextResolver(authorizationContexts);
+    public FilterRegistrationBean<ServletBearerAuthenticationFilter> bearerAuthenticationFilter() throws IOException {
         BearerAuthenticationHandler bearerAuthenticationHandler = BearerAuthenticationHandler.builder(
-                authorizationContextResolver).build();
+                new PropertiesAuthorizationContextResolver()).build();
         FilterRegistrationBean<ServletBearerAuthenticationFilter> servletBearerAuthenticationFilter =
                 new FilterRegistrationBean<>(new ServletBearerAuthenticationFilter(bearerAuthenticationHandler));
         servletBearerAuthenticationFilter.setUrlPatterns(Collections.singleton("/resource/*"));
