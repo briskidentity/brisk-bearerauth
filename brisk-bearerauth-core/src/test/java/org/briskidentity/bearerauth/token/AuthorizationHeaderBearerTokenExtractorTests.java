@@ -49,16 +49,6 @@ class AuthorizationHeaderBearerTokenExtractorTests {
         }
 
         @Override
-        public String getRequestMethod() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public String getRequestPath() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
         public String getAuthorizationHeader() {
             return this.authorizationHeaderValue;
         }

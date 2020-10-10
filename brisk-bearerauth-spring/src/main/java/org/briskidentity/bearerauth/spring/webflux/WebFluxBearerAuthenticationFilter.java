@@ -48,16 +48,6 @@ public class WebFluxBearerAuthenticationFilter implements WebFilter {
         }
 
         @Override
-        public String getRequestMethod() {
-            return this.serverWebExchange.getRequest().getMethod().name();
-        }
-
-        @Override
-        public String getRequestPath() {
-            return this.serverWebExchange.getRequest().getURI().getPath();
-        }
-
-        @Override
         public String getAuthorizationHeader() {
             return this.serverWebExchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
         }

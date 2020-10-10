@@ -55,18 +55,6 @@ public class AuthorizationContext implements Principal, Serializable {
         return this.attributes;
     }
 
-    /**
-     * Get the authorization context attribute by name.
-     * @param name the attribute name
-     * @param <T> the attribute type
-     * @return the attribute value
-     */
-    public <T> T getAttribute(String name) {
-        @SuppressWarnings("unchecked")
-        T attribute = (T) this.attributes.get(name);
-        return attribute;
-    }
-
     @Override
     public String getName() {
         // TODO figure out how to handle principal name
