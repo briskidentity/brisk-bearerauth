@@ -8,6 +8,7 @@ import java.time.Instant;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Supplier;
 
 /**
  * Representation of authorization context attached to a {@link BearerToken}.
@@ -20,15 +21,29 @@ public class AuthorizationContext implements Principal, Serializable {
 
     private final Map<String, Object> attributes;
 
+    private final String principalName;
+
+    /**
+     * @param scopeValues the scope values
+     * @param expiry the expiry
+     * @param attributes the attributes
+     * @param principalNameSupplier the principal name supplier
+     */
+    public AuthorizationContext(Set<String> scopeValues, Instant expiry, Map<String, Object> attributes,
+            Supplier<String> principalNameSupplier) {
+        this.scopeValues = Collections.unmodifiableSet(scopeValues);
+        this.expiry = expiry;
+        this.attributes = Collections.unmodifiableMap(attributes);
+        this.principalName = principalNameSupplier.get();
+    }
+
     /**
      * @param scopeValues the scope values
      * @param expiry the expiry
      * @param attributes the attributes
      */
     public AuthorizationContext(Set<String> scopeValues, Instant expiry, Map<String, Object> attributes) {
-        this.scopeValues = Collections.unmodifiableSet(scopeValues);
-        this.expiry = expiry;
-        this.attributes = Collections.unmodifiableMap(attributes);
+        this(scopeValues, expiry, attributes, () -> (String) attributes.get("sub"));
     }
 
     /**
@@ -57,8 +72,7 @@ public class AuthorizationContext implements Principal, Serializable {
 
     @Override
     public String getName() {
-        // TODO figure out how to handle principal name
-        return (String) this.attributes.getOrDefault("sub", "unknown");
+        return this.principalName;
     }
 
 }
