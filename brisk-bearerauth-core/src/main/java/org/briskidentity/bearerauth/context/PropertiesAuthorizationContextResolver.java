@@ -31,7 +31,7 @@ public class PropertiesAuthorizationContextResolver extends MapAuthorizationCont
             }
             Instant expiry = Instant.parse(authorizationContextParts[0]);
             Set<String> scopeValues = new LinkedHashSet<>();
-            if (authorizationContextParts.length > 1) {
+            if ((authorizationContextParts.length > 1) && !authorizationContextParts[1].isEmpty()) {
                 scopeValues.addAll(Arrays.asList(authorizationContextParts[1].split(" ")));
             }
             Map<String, Object> attributes = new HashMap<>();
