@@ -3,7 +3,6 @@ package org.briskidentity.bearerauth.context.validation;
 import org.briskidentity.bearerauth.context.AuthorizationContext;
 import org.briskidentity.bearerauth.token.error.BearerTokenError;
 import org.briskidentity.bearerauth.token.error.BearerTokenException;
-import org.briskidentity.bearerauth.util.CompletableFutureHelper;
 
 import java.time.Clock;
 import java.util.Objects;
@@ -27,10 +26,14 @@ class ExpiryAuthorizationContextValidator implements AuthorizationContextValidat
 
     @Override
     public CompletionStage<Void> validate(AuthorizationContext authorizationContext) {
-        if (this.clock.instant().isAfter(authorizationContext.getExpiry())) {
-            return CompletableFutureHelper.failedFuture(new BearerTokenException(BearerTokenError.INVALID_TOKEN));
+        CompletableFuture<Void> result = new CompletableFuture<>();
+        if (this.clock.instant().isBefore(authorizationContext.getExpiry())) {
+            result.complete(null);
         }
-        return CompletableFuture.completedFuture(null);
+        else {
+            result.completeExceptionally(new BearerTokenException(BearerTokenError.INVALID_TOKEN));
+        }
+        return result;
     }
 
 }

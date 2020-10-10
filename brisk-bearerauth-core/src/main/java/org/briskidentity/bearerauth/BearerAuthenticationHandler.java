@@ -7,7 +7,6 @@ import org.briskidentity.bearerauth.http.ProtectedResourceRequest;
 import org.briskidentity.bearerauth.token.BearerToken;
 import org.briskidentity.bearerauth.token.BearerTokenExtractor;
 import org.briskidentity.bearerauth.token.error.BearerTokenException;
-import org.briskidentity.bearerauth.util.CompletableFutureHelper;
 
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
@@ -49,13 +48,15 @@ public class BearerAuthenticationHandler {
      * @return the completion stage of {@link AuthorizationContext}
      */
     public CompletionStage<AuthorizationContext> handle(ProtectedResourceRequest request) {
-        BearerToken bearerToken = this.bearerTokenExtractor.extract(request);
-        if (bearerToken == null) {
-            return CompletableFutureHelper.failedFuture(new BearerTokenException());
-        }
-        return this.authorizationContextResolver.resolve(bearerToken)
+        return CompletableFuture.supplyAsync(() -> {
+            BearerToken bearerToken = this.bearerTokenExtractor.extract(request);
+            if (bearerToken == null) {
+                throw new BearerTokenException();
+            }
+            return bearerToken;
+        }).thenCompose(this.authorizationContextResolver::resolve)
                 .thenCompose(authorizationContext -> this.authorizationContextValidator.validate(authorizationContext)
-                        .thenCompose(unused -> CompletableFuture.completedFuture(authorizationContext)));
+                        .thenApply(unused -> authorizationContext));
     }
 
     public static class Builder {
