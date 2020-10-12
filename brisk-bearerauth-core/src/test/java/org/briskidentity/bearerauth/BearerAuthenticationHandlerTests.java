@@ -14,7 +14,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.time.Duration;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.concurrent.CompletableFuture;
@@ -81,7 +80,7 @@ class BearerAuthenticationHandlerTests {
     }
 
     @Test
-    void handle_NoBearerToken_ShouldCompleteExceptionally() {
+    void handle_NoBearerToken_ShouldThrowException() {
         assertThatExceptionOfType(CompletionException.class)
                 .isThrownBy(() -> this.bearerAuthenticationHandler.handle(this.protectedResourceRequest)
                         .toCompletableFuture().join()).havingRootCause().isInstanceOf(BearerTokenException.class)
@@ -89,7 +88,7 @@ class BearerAuthenticationHandlerTests {
     }
 
     @Test
-    void handle_NoAuthorizationContext_ShouldCompleteExceptionally() {
+    void handle_NoAuthorizationContext_ShouldThrowException() {
         BearerToken bearerToken = new BearerToken("secret");
         given(this.protectedResourceRequest.getAuthorizationHeader()).willReturn(bearerToken.toString());
         given(this.bearerTokenExtractor.extract(any())).willReturn(bearerToken);
@@ -102,7 +101,7 @@ class BearerAuthenticationHandlerTests {
     }
 
     @Test
-    void handle_InvalidAuthorizationContext_ShouldCompleteExceptionally() {
+    void handle_InvalidAuthorizationContext_ShouldThrowException() {
         BearerToken bearerToken = new BearerToken("secret");
         AuthorizationContext authorizationContext = new AuthorizationContext(Collections.emptySet(), Instant.now(),
                 Collections.emptyMap());
@@ -119,7 +118,7 @@ class BearerAuthenticationHandlerTests {
     }
 
     @Test
-    void handle_ValidRequest_ShouldComplete() {
+    void handle_ValidRequest_ShouldReturnAuthorizationContext() {
         BearerToken bearerToken = new BearerToken("secret");
         AuthorizationContext authorizationContext = new AuthorizationContext(Collections.emptySet(), Instant.now(),
                 Collections.emptyMap());
@@ -129,8 +128,8 @@ class BearerAuthenticationHandlerTests {
                 .willReturn(CompletableFuture.completedFuture(authorizationContext));
         given(this.authorizationContextValidator.validate(authorizationContext))
                 .willReturn(CompletableFuture.completedFuture(null));
-        assertThat(this.bearerAuthenticationHandler.handle(protectedResourceRequest))
-                .succeedsWithin(Duration.ofSeconds(1)).isEqualTo(authorizationContext);
+        assertThat(this.bearerAuthenticationHandler.handle(protectedResourceRequest).toCompletableFuture().join())
+                .isEqualTo(authorizationContext);
     }
 
     private static <T> CompletableFuture<T> failedFuture(Exception ex) {
