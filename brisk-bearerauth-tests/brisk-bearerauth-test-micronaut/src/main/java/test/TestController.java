@@ -4,18 +4,17 @@ import io.micronaut.http.HttpRequest;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
-import org.briskidentity.bearerauth.context.AuthorizationContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Controller("/resource")
 public class TestController {
 
+    private static final Logger logger = LoggerFactory.getLogger(TestController.class);
+
     @Get(produces = MediaType.TEXT_PLAIN)
     public String greet(HttpRequest<?> request) {
-        request.getUserPrincipal().ifPresent(principal -> {
-            AuthorizationContext authorizationContext = (AuthorizationContext) principal;
-            System.out.println("authorizationContext{scope=" + String.join(",", authorizationContext.getScopeValues())
-                    + ",expiry=" + authorizationContext.getExpiry() + "}");
-        });
+        logger.info("Principal: {}", request.getUserPrincipal());
         return "Hello World!";
     }
 

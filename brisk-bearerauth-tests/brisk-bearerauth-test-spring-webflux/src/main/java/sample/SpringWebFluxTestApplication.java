@@ -1,9 +1,10 @@
 package sample;
 
 import org.briskidentity.bearerauth.BearerAuthenticationHandler;
-import org.briskidentity.bearerauth.context.AuthorizationContext;
 import org.briskidentity.bearerauth.context.PropertiesAuthorizationContextResolver;
 import org.briskidentity.bearerauth.spring.webflux.WebFluxBearerAuthenticationFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -17,17 +18,15 @@ import java.io.IOException;
 @RestController
 public class SpringWebFluxTestApplication {
 
+    private static final Logger logger = LoggerFactory.getLogger(SpringWebFluxTestApplication.class);
+
     public static void main(String[] args) {
         SpringApplication.run(SpringWebFluxTestApplication.class, args);
     }
 
     @GetMapping(path = "/resource")
     public String greet(ServerWebExchange exchange) {
-        exchange.getPrincipal().subscribe(principal -> {
-            AuthorizationContext authorizationContext = (AuthorizationContext) principal;
-            System.out.println("authorizationContext{scope=" + String.join(",", authorizationContext.getScopeValues())
-                    + ",expiry=" + authorizationContext.getExpiry() + "}");
-        });
+        exchange.getPrincipal().subscribe(principal -> logger.info("Principal: {}", principal));
         return "Hello World!";
     }
 

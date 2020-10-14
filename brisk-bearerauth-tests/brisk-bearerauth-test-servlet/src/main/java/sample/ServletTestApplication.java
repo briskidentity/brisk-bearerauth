@@ -1,7 +1,6 @@
 package sample;
 
 import org.briskidentity.bearerauth.BearerAuthenticationHandler;
-import org.briskidentity.bearerauth.context.AuthorizationContext;
 import org.briskidentity.bearerauth.context.PropertiesAuthorizationContextResolver;
 import org.briskidentity.bearerauth.servlet.ServletBearerAuthenticationFilter;
 import org.eclipse.jetty.server.Server;
@@ -15,10 +14,13 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.EnumSet;
+import java.util.logging.Logger;
 
 public class ServletTestApplication {
 
     private static final String SERVLET_PATH = "/resource";
+
+    private static final Logger logger = Logger.getLogger(ServletTestApplication.class.getName());
 
     public static void main(String[] args) throws Exception {
         ServletContextHandler handler = new ServletContextHandler();
@@ -41,12 +43,9 @@ public class ServletTestApplication {
 
         @Override
         protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-            AuthorizationContext authorizationContext = (AuthorizationContext) req.getUserPrincipal();
-            System.out.println("authorizationContext{scope=" + String.join(",", authorizationContext.getScopeValues())
-                    + ",expiry=" + authorizationContext.getExpiry() + "}");
-            byte[] content = "Hello World!".getBytes(StandardCharsets.UTF_8);
+            logger.info("Principal: " + req.getUserPrincipal());
             resp.setContentType("text/plain");
-            resp.getOutputStream().write(content);
+            resp.getOutputStream().write("Hello World!".getBytes(StandardCharsets.UTF_8));
         }
 
     }

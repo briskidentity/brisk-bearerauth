@@ -2,7 +2,6 @@ package org.briskidentity.bearerauth;
 
 import org.briskidentity.bearerauth.context.AuthorizationContext;
 import org.briskidentity.bearerauth.context.AuthorizationContextResolver;
-import org.briskidentity.bearerauth.context.validation.AuthorizationContextValidator;
 import org.briskidentity.bearerauth.http.ProtectedResourceRequest;
 import org.briskidentity.bearerauth.token.BearerToken;
 import org.briskidentity.bearerauth.token.BearerTokenExtractor;
@@ -21,22 +20,16 @@ public class BearerAuthenticationHandler {
 
     private final AuthorizationContextResolver authorizationContextResolver;
 
-    private final AuthorizationContextValidator authorizationContextValidator;
-
     /**
      * @param bearerTokenExtractor the bearer token resolver
      * @param authorizationContextResolver the authorization context resolver
-     * @param authorizationContextValidator the authorization context validator
      */
     private BearerAuthenticationHandler(BearerTokenExtractor bearerTokenExtractor,
-            AuthorizationContextResolver authorizationContextResolver,
-            AuthorizationContextValidator authorizationContextValidator) {
+            AuthorizationContextResolver authorizationContextResolver) {
         Objects.requireNonNull(bearerTokenExtractor, "bearerTokenExtractor must not be null");
         Objects.requireNonNull(authorizationContextResolver, "authorizationContextResolver must not be null");
-        Objects.requireNonNull(authorizationContextValidator, "authorizationContextValidator must not be null");
         this.bearerTokenExtractor = bearerTokenExtractor;
         this.authorizationContextResolver = authorizationContextResolver;
-        this.authorizationContextValidator = authorizationContextValidator;
     }
 
     public static Builder builder(AuthorizationContextResolver authorizationContextResolver) {
@@ -54,9 +47,7 @@ public class BearerAuthenticationHandler {
                 throw new BearerTokenException();
             }
             return bearerToken;
-        }).thenCompose(this.authorizationContextResolver::resolve)
-                .thenCompose(authorizationContext -> this.authorizationContextValidator.validate(authorizationContext)
-                        .thenApply(unused -> authorizationContext));
+        }).thenCompose(this.authorizationContextResolver::resolve);
     }
 
     public static class Builder {
@@ -64,8 +55,6 @@ public class BearerAuthenticationHandler {
         private final AuthorizationContextResolver authorizationContextResolver;
 
         private BearerTokenExtractor bearerTokenExtractor = BearerTokenExtractor.authorizationHeader();
-
-        private AuthorizationContextValidator authorizationContextValidator = AuthorizationContextValidator.expiry();
 
         private Builder(AuthorizationContextResolver authorizationContextResolver) {
             Objects.requireNonNull(authorizationContextResolver, "authorizationContextResolver must not be null");
@@ -78,15 +67,8 @@ public class BearerAuthenticationHandler {
             return this;
         }
 
-        public Builder authorizationContextValidator(AuthorizationContextValidator authorizationContextValidator) {
-            Objects.requireNonNull(authorizationContextValidator, "authorizationContextValidator must not be null");
-            this.authorizationContextValidator = authorizationContextValidator;
-            return this;
-        }
-
         public BearerAuthenticationHandler build() {
-            return new BearerAuthenticationHandler(this.bearerTokenExtractor, this.authorizationContextResolver,
-                    this.authorizationContextValidator);
+            return new BearerAuthenticationHandler(this.bearerTokenExtractor, this.authorizationContextResolver);
         }
 
     }

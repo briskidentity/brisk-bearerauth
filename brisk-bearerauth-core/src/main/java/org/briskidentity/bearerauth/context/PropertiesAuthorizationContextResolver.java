@@ -29,7 +29,7 @@ public class PropertiesAuthorizationContextResolver extends MapAuthorizationCont
             if (authorizationContextParts.length == 0) {
                 throw new IllegalStateException("Invalid authorization context entry");
             }
-            Instant expiry = Instant.parse(authorizationContextParts[0]);
+            Instant expiry = Instant.parse(authorizationContextParts[0]); // TODO
             Set<String> scopeValues = new LinkedHashSet<>();
             if ((authorizationContextParts.length > 1) && !authorizationContextParts[1].isEmpty()) {
                 scopeValues.addAll(Arrays.asList(authorizationContextParts[1].split(" ")));
@@ -45,7 +45,7 @@ public class PropertiesAuthorizationContextResolver extends MapAuthorizationCont
                 }
             }
             authorizationContexts.put(
-                    new BearerToken((String) key), new AuthorizationContext(scopeValues, expiry, attributes));
+                    new BearerToken((String) key), new AuthorizationContext(scopeValues, attributes));
         });
         return authorizationContexts;
     }

@@ -19,11 +19,4 @@ public interface AuthorizationContextValidator {
      */
     CompletionStage<Void> validate(AuthorizationContext authorizationContext);
 
-    /**
-     * @return the expiry authorization context validator
-     */
-    static AuthorizationContextValidator expiry() {
-        return ExpiryAuthorizationContextValidator.INSTANCE;
-    }
-
 }

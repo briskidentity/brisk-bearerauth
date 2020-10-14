@@ -1,9 +1,10 @@
 package sample;
 
 import org.briskidentity.bearerauth.BearerAuthenticationHandler;
-import org.briskidentity.bearerauth.context.AuthorizationContext;
 import org.briskidentity.bearerauth.context.PropertiesAuthorizationContextResolver;
 import org.briskidentity.bearerauth.servlet.ServletBearerAuthenticationFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -19,15 +20,15 @@ import java.util.Collections;
 @RestController
 public class SpringMvcTestApplication {
 
+    private static final Logger logger = LoggerFactory.getLogger(SpringMvcTestApplication.class);
+
     public static void main(String[] args) {
         SpringApplication.run(SpringMvcTestApplication.class, args);
     }
 
     @GetMapping(path = "/resource")
     public String greet(WebRequest webRequest) {
-        AuthorizationContext authorizationContext = (AuthorizationContext) webRequest.getUserPrincipal();
-        System.out.println("authorizationContext{scope=" + String.join(",", authorizationContext.getScopeValues())
-                + ",expiry=" + authorizationContext.getExpiry() + "}");
+        logger.info("Principal: {}", webRequest.getUserPrincipal());
         return "Hello World!";
     }
 
