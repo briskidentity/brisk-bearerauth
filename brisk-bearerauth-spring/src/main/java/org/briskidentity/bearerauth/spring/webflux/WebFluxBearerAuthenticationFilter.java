@@ -1,13 +1,13 @@
 package org.briskidentity.bearerauth.spring.webflux;
 
-import org.briskidentity.bearerauth.BearerAuthenticationHandler;
 import org.briskidentity.bearerauth.context.AuthorizationContext;
+import org.briskidentity.bearerauth.context.AuthorizationContextResolver;
 import org.briskidentity.bearerauth.http.ProtectedResourceRequest;
 import org.briskidentity.bearerauth.http.WwwAuthenticateBuilder;
+import org.briskidentity.bearerauth.token.BearerTokenExtractor;
 import org.briskidentity.bearerauth.token.error.BearerTokenException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.ServerWebExchangeDecorator;
 import org.springframework.web.server.WebFilter;
@@ -19,22 +19,31 @@ import java.util.Objects;
 
 public class WebFluxBearerAuthenticationFilter implements WebFilter {
 
-    private final BearerAuthenticationHandler bearerAuthenticationHandler;
+    private final BearerTokenExtractor bearerTokenExtractor;
 
-    public WebFluxBearerAuthenticationFilter(BearerAuthenticationHandler bearerAuthenticationHandler) {
-        Objects.requireNonNull(bearerAuthenticationHandler, "bearerAuthenticationHandler must not be null");
-        this.bearerAuthenticationHandler = bearerAuthenticationHandler;
+    private final AuthorizationContextResolver authorizationContextResolver;
+
+    public WebFluxBearerAuthenticationFilter(BearerTokenExtractor bearerTokenExtractor,
+            AuthorizationContextResolver authorizationContextResolver) {
+        Objects.requireNonNull(bearerTokenExtractor, "bearerTokenExtractor must not be null");
+        Objects.requireNonNull(authorizationContextResolver, "authorizationContextResolver must not be null");
+        this.bearerTokenExtractor = bearerTokenExtractor;
+        this.authorizationContextResolver = authorizationContextResolver;
+    }
+
+    public WebFluxBearerAuthenticationFilter(AuthorizationContextResolver authorizationContextResolver) {
+        this(BearerTokenExtractor.authorizationHeader(), authorizationContextResolver);
     }
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-        return Mono.fromCompletionStage(this.bearerAuthenticationHandler.handle(new WebFluxProtectedResourceRequest(exchange)))
+        return Mono.defer(() -> Mono.just(this.bearerTokenExtractor.extract(new WebFluxProtectedResourceRequest(exchange))))
+                .flatMap(bearerToken -> Mono.fromCompletionStage(this.authorizationContextResolver.resolve(bearerToken)))
                 .flatMap(authorizationContext -> chain.filter(new AuthorizedExchange(exchange, authorizationContext)))
                 .onErrorResume(BearerTokenException.class, ex -> {
                     String wwwAuthenticate = WwwAuthenticateBuilder.from(ex).build();
-                    ServerHttpResponse response = exchange.getResponse();
-                    response.getHeaders().set(HttpHeaders.WWW_AUTHENTICATE, wwwAuthenticate);
-                    response.setStatusCode(HttpStatus.resolve(ex.getStatus()));
+                    exchange.getResponse().getHeaders().set(HttpHeaders.WWW_AUTHENTICATE, wwwAuthenticate);
+                    exchange.getResponse().setStatusCode(HttpStatus.resolve(ex.getStatus()));
                     return Mono.empty();
                 });
     }

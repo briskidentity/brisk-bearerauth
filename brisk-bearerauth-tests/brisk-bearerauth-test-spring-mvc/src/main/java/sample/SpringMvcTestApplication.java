@@ -1,6 +1,5 @@
 package sample;
 
-import org.briskidentity.bearerauth.BearerAuthenticationHandler;
 import org.briskidentity.bearerauth.context.PropertiesAuthorizationContextResolver;
 import org.briskidentity.bearerauth.servlet.ServletBearerAuthenticationFilter;
 import org.slf4j.Logger;
@@ -34,10 +33,9 @@ public class SpringMvcTestApplication {
 
     @Bean
     public FilterRegistrationBean<ServletBearerAuthenticationFilter> bearerAuthenticationFilter() throws IOException {
-        BearerAuthenticationHandler bearerAuthenticationHandler = BearerAuthenticationHandler.builder(
-                new PropertiesAuthorizationContextResolver()).build();
         FilterRegistrationBean<ServletBearerAuthenticationFilter> servletBearerAuthenticationFilter =
-                new FilterRegistrationBean<>(new ServletBearerAuthenticationFilter(bearerAuthenticationHandler));
+                new FilterRegistrationBean<>(new ServletBearerAuthenticationFilter(
+                        new PropertiesAuthorizationContextResolver()));
         servletBearerAuthenticationFilter.setUrlPatterns(Collections.singleton("/resource/*"));
         return servletBearerAuthenticationFilter;
     }

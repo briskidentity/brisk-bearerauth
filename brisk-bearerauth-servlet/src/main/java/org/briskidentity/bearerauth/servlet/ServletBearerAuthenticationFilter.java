@@ -1,9 +1,11 @@
 package org.briskidentity.bearerauth.servlet;
 
-import org.briskidentity.bearerauth.BearerAuthenticationHandler;
 import org.briskidentity.bearerauth.context.AuthorizationContext;
+import org.briskidentity.bearerauth.context.AuthorizationContextResolver;
 import org.briskidentity.bearerauth.http.ProtectedResourceRequest;
 import org.briskidentity.bearerauth.http.WwwAuthenticateBuilder;
+import org.briskidentity.bearerauth.token.BearerToken;
+import org.briskidentity.bearerauth.token.BearerTokenExtractor;
 import org.briskidentity.bearerauth.token.error.BearerTokenException;
 
 import javax.servlet.Filter;
@@ -18,15 +20,26 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.Objects;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutionException;
 
 public class ServletBearerAuthenticationFilter implements Filter {
 
-    private final BearerAuthenticationHandler bearerAuthenticationHandler;
+    private final BearerTokenExtractor bearerTokenExtractor;
 
-    public ServletBearerAuthenticationFilter(BearerAuthenticationHandler bearerAuthenticationHandler) {
-        Objects.requireNonNull(bearerAuthenticationHandler, "bearerAuthenticationHandler must not be null");
-        this.bearerAuthenticationHandler = bearerAuthenticationHandler;
+    private final AuthorizationContextResolver authorizationContextResolver;
+
+    public ServletBearerAuthenticationFilter(BearerTokenExtractor bearerTokenExtractor,
+            AuthorizationContextResolver authorizationContextResolver) {
+        Objects.requireNonNull(bearerTokenExtractor, "bearerTokenExtractor must not be null");
+        Objects.requireNonNull(authorizationContextResolver, "authorizationContextResolver must not be null");
+        this.bearerTokenExtractor = bearerTokenExtractor;
+        this.authorizationContextResolver = authorizationContextResolver;
+    }
+
+    public ServletBearerAuthenticationFilter(AuthorizationContextResolver authorizationContextResolver) {
+        this(BearerTokenExtractor.authorizationHeader(), authorizationContextResolver);
     }
 
     @Override
@@ -42,23 +55,33 @@ public class ServletBearerAuthenticationFilter implements Filter {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
         try {
-            AuthorizationContext authorizationContext = this.bearerAuthenticationHandler.handle(
-                    new ServletProtectedResourceRequest(req)).toCompletableFuture().get();
+            BearerToken bearerToken = this.bearerTokenExtractor.extract(new ServletProtectedResourceRequest(req));
+            AuthorizationContext authorizationContext = this.authorizationContextResolver.resolve(bearerToken)
+                    .toCompletableFuture().join();
             chain.doFilter(new AuthorizedRequest(req, authorizationContext), response);
         }
-        catch (ExecutionException ex) {
-            Throwable cause = ex.getCause();
-            if (!(cause instanceof BearerTokenException)) {
-                throw new ServletException(ex);
-            }
-            BearerTokenException bearerTokenException = (BearerTokenException) cause;
-            String wwwAuthenticate = WwwAuthenticateBuilder.from(bearerTokenException).build();
-            res.addHeader("WWW-Authenticate", wwwAuthenticate);
-            res.sendError(bearerTokenException.getStatus());
+        catch (BearerTokenException ex) {
+            handleBearerTokenException(ex, res);
         }
-        catch (InterruptedException ex) {
+        catch (CompletionException ex) {
+            Throwable cause = ex.getCause();
+            if (cause instanceof BearerTokenException) {
+                handleBearerTokenException((BearerTokenException) cause, res);
+            }
+            else {
+                throw new ServletException(cause);
+            }
+        }
+        catch (CancellationException ex) {
             throw new ServletException(ex);
         }
+    }
+
+    private static void handleBearerTokenException(BearerTokenException ex, HttpServletResponse response)
+            throws IOException {
+        String wwwAuthenticate = WwwAuthenticateBuilder.from(ex).build();
+        response.addHeader("WWW-Authenticate", wwwAuthenticate);
+        response.sendError(ex.getStatus());
     }
 
     @Override

@@ -1,6 +1,5 @@
 package sample;
 
-import org.briskidentity.bearerauth.BearerAuthenticationHandler;
 import org.briskidentity.bearerauth.context.PropertiesAuthorizationContextResolver;
 import org.briskidentity.bearerauth.spring.webflux.WebFluxBearerAuthenticationFilter;
 import org.slf4j.Logger;
@@ -32,9 +31,7 @@ public class SpringWebFluxTestApplication {
 
     @Bean
     public WebFluxBearerAuthenticationFilter bearerAuthenticationFilter() throws IOException {
-        BearerAuthenticationHandler bearerAuthenticationHandler = BearerAuthenticationHandler.builder(
-                new PropertiesAuthorizationContextResolver()).build();
-        return new WebFluxBearerAuthenticationFilter(bearerAuthenticationHandler);
+        return new WebFluxBearerAuthenticationFilter(new PropertiesAuthorizationContextResolver());
     }
 
 }

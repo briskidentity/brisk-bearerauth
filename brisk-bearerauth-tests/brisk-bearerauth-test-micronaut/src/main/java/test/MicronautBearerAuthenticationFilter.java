@@ -10,10 +10,11 @@ import io.micronaut.http.annotation.Filter;
 import io.micronaut.http.filter.OncePerRequestHttpServerFilter;
 import io.micronaut.http.filter.ServerFilterChain;
 import io.reactivex.Flowable;
-import org.briskidentity.bearerauth.BearerAuthenticationHandler;
+import org.briskidentity.bearerauth.context.AuthorizationContextResolver;
 import org.briskidentity.bearerauth.context.PropertiesAuthorizationContextResolver;
 import org.briskidentity.bearerauth.http.ProtectedResourceRequest;
 import org.briskidentity.bearerauth.http.WwwAuthenticateBuilder;
+import org.briskidentity.bearerauth.token.BearerTokenExtractor;
 import org.briskidentity.bearerauth.token.error.BearerTokenException;
 import org.reactivestreams.Publisher;
 
@@ -22,32 +23,38 @@ import java.io.IOException;
 @Filter("/**")
 public class MicronautBearerAuthenticationFilter extends OncePerRequestHttpServerFilter {
 
-    private final BearerAuthenticationHandler bearerAuthenticationHandler;
+    private final BearerTokenExtractor bearerTokenExtractor = BearerTokenExtractor.authorizationHeader();
+
+    private final AuthorizationContextResolver authorizationContextResolver;
 
     public MicronautBearerAuthenticationFilter() throws IOException {
-        this.bearerAuthenticationHandler = BearerAuthenticationHandler.builder(
-                new PropertiesAuthorizationContextResolver()).build();
+        this.authorizationContextResolver = new PropertiesAuthorizationContextResolver();
     }
 
     @Override
     public Publisher<MutableHttpResponse<?>> doFilterOnce(HttpRequest<?> request, ServerFilterChain chain) {
-        return Flowable.fromFuture(
-                this.bearerAuthenticationHandler.handle(new MicronautProtectedResourceRequest(request)).toCompletableFuture())
+        return Flowable.defer(() -> Flowable.just(this.bearerTokenExtractor.extract(new MicronautProtectedResourceRequest(request))))
+                .flatMap(bearerToken -> Flowable.fromFuture(authorizationContextResolver.resolve(bearerToken).toCompletableFuture()))
                 .flatMap(authorizationContext -> {
                     request.setAttribute(HttpAttributes.PRINCIPAL, authorizationContext);
                     return chain.proceed(request);
                 })
                 .onErrorResumeNext(th -> {
-                    Throwable cause = th.getCause();
-                    if (!(cause instanceof BearerTokenException)) {
-                        return Flowable.error(cause);
+                    if (th instanceof BearerTokenException) {
+                        return handleBearerTokenException((BearerTokenException) th);
                     }
-                    BearerTokenException ex = (BearerTokenException) cause;
-                    String wwwAuthenticate = WwwAuthenticateBuilder.from(ex).build();
-                    MutableHttpResponse<Object> response = HttpResponse.status(HttpStatus.valueOf(ex.getStatus()));
-                    response.getHeaders().set(HttpHeaders.WWW_AUTHENTICATE, wwwAuthenticate);
-                    return Flowable.just(response);
+                    if (th.getCause() instanceof BearerTokenException) {
+                        return handleBearerTokenException((BearerTokenException) th.getCause());
+                    }
+                    return Flowable.error(th);
                 });
+    }
+
+    private static Flowable<MutableHttpResponse<?>> handleBearerTokenException(BearerTokenException ex) {
+        String wwwAuthenticate = WwwAuthenticateBuilder.from(ex).build();
+        MutableHttpResponse<Object> response = HttpResponse.status(HttpStatus.valueOf(ex.getStatus()));
+        response.getHeaders().set(HttpHeaders.WWW_AUTHENTICATE, wwwAuthenticate);
+        return Flowable.just(response);
     }
 
     private static class MicronautProtectedResourceRequest implements ProtectedResourceRequest {

@@ -1,9 +1,11 @@
 package org.briskidentity.bearerauth.token;
 
 import org.briskidentity.bearerauth.http.ProtectedResourceRequest;
+import org.briskidentity.bearerauth.token.error.BearerTokenException;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatNullPointerException;
 
 /**
@@ -21,21 +23,24 @@ class AuthorizationHeaderBearerTokenExtractorTests {
 
     @Test
     void extract_RequestWithNoAuthorizationHeader_ShouldReturnNull() {
-        assertThat(this.bearerTokenExtractor.extract(new TestProtectedResourceRequest(null))).isNull();
+        assertThatExceptionOfType(BearerTokenException.class)
+                .isThrownBy(() -> this.bearerTokenExtractor.extract(new TestProtectedResourceRequest(null)));
     }
 
     @Test
-    void extract_RequestWithUnsupportedAuthorizationHeaderScheme_ShouldReturnNull() {
-        assertThat(this.bearerTokenExtractor.extract(new TestProtectedResourceRequest("Basic test"))).isNull();
+    void extract_RequestWithUnsupportedAuthorizationType_ShouldReturnNull() {
+        assertThatExceptionOfType(BearerTokenException.class)
+                .isThrownBy(() -> this.bearerTokenExtractor.extract(new TestProtectedResourceRequest("Basic test")));
     }
 
     @Test
-    void extract_RequestWithAuthorizationHeader_ShouldReturnNull() {
-        assertThat(this.bearerTokenExtractor.extract(new TestProtectedResourceRequest("bearer test"))).isNull();
+    void extract_RequestWithLowercaseBearerAuthorizationType_ShouldReturnNull() {
+        assertThatExceptionOfType(BearerTokenException.class)
+                .isThrownBy(() -> this.bearerTokenExtractor.extract(new TestProtectedResourceRequest("bearer test")));
     }
 
     @Test
-    void extract_RequestWithValidAuthorizationHeader_ShouldReturnToken() {
+    void extract_RequestWithBearerAuthorizationType_ShouldReturnToken() {
         assertThat(this.bearerTokenExtractor.extract(new TestProtectedResourceRequest("Bearer test")))
                 .isEqualTo(new BearerToken("test"));
     }

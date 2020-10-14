@@ -1,11 +1,11 @@
 package sample;
 
-import org.briskidentity.bearerauth.BearerAuthenticationHandler;
 import org.briskidentity.bearerauth.context.PropertiesAuthorizationContextResolver;
 import org.briskidentity.bearerauth.servlet.ServletBearerAuthenticationFilter;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
 
 import javax.servlet.DispatcherType;
 import javax.servlet.http.HttpServlet;
@@ -25,21 +25,16 @@ public class ServletTestApplication {
     public static void main(String[] args) throws Exception {
         ServletContextHandler handler = new ServletContextHandler();
         handler.setContextPath("/");
-        handler.addServlet(TestServlet.class, SERVLET_PATH);
-        handler.addFilter(new FilterHolder(bearerAuthenticationFilter()), SERVLET_PATH,
-                EnumSet.of(DispatcherType.REQUEST));
+        handler.addServlet(new ServletHolder(new TestServlet()), SERVLET_PATH);
+        handler.addFilter(new FilterHolder(new ServletBearerAuthenticationFilter(
+                new PropertiesAuthorizationContextResolver())), SERVLET_PATH,
+                EnumSet.of(DispatcherType.REQUEST, DispatcherType.ASYNC, DispatcherType.ERROR));
         Server server = new Server(8080);
         server.setHandler(handler);
         server.start();
     }
 
-    private static ServletBearerAuthenticationFilter bearerAuthenticationFilter() throws IOException {
-        BearerAuthenticationHandler bearerAuthenticationHandler = BearerAuthenticationHandler.builder(
-                new PropertiesAuthorizationContextResolver()).build();
-        return new ServletBearerAuthenticationFilter(bearerAuthenticationHandler);
-    }
-
-    public static class TestServlet extends HttpServlet {
+    private static class TestServlet extends HttpServlet {
 
         @Override
         protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
