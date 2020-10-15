@@ -43,7 +43,7 @@ public class WebFluxBearerAuthenticationFilter implements WebFilter {
                 .onErrorResume(BearerTokenException.class, ex -> {
                     String wwwAuthenticate = WwwAuthenticateBuilder.from(ex).build();
                     exchange.getResponse().getHeaders().set(HttpHeaders.WWW_AUTHENTICATE, wwwAuthenticate);
-                    exchange.getResponse().setStatusCode(HttpStatus.resolve(ex.getStatus()));
+                    exchange.getResponse().setStatusCode(HttpStatus.resolve(ex.getHttpStatus()));
                     return Mono.empty();
                 });
     }

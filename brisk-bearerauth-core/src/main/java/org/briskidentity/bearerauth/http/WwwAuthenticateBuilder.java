@@ -1,6 +1,5 @@
 package org.briskidentity.bearerauth.http;
 
-import org.briskidentity.bearerauth.token.error.BearerTokenError;
 import org.briskidentity.bearerauth.token.error.BearerTokenException;
 
 import java.util.ArrayList;
@@ -51,9 +50,9 @@ public final class WwwAuthenticateBuilder {
         if (this.realm != null) {
             attributes.add(buildAttribute("realm", this.realm));
         }
-        BearerTokenError error = this.bearerTokenException.getError();
-        if (error != null) {
-            attributes.add(buildAttribute("error", error.getCode()));
+        String errorCode = this.bearerTokenException.getErrorCode();
+        if (errorCode != null) {
+            attributes.add(buildAttribute("error", errorCode));
         }
         if (!attributes.isEmpty()) {
             wwwAuthenticate += " " + String.join(", ", attributes);

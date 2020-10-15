@@ -22,7 +22,6 @@ import java.security.Principal;
 import java.util.Objects;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletionException;
-import java.util.concurrent.ExecutionException;
 
 public class ServletBearerAuthenticationFilter implements Filter {
 
@@ -81,7 +80,7 @@ public class ServletBearerAuthenticationFilter implements Filter {
             throws IOException {
         String wwwAuthenticate = WwwAuthenticateBuilder.from(ex).build();
         response.addHeader("WWW-Authenticate", wwwAuthenticate);
-        response.sendError(ex.getStatus());
+        response.sendError(ex.getHttpStatus());
     }
 
     @Override

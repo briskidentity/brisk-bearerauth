@@ -1,36 +1,23 @@
 package org.briskidentity.bearerauth.token.error;
 
-import java.util.Objects;
+public abstract class BearerTokenException extends RuntimeException {
 
-public class BearerTokenException extends RuntimeException {
+    private final String errorCode;
 
-    private final BearerTokenError error;
+    private final int httpStatus;
 
-    public BearerTokenException() {
-        this.error = null;
-    }
-
-    public BearerTokenException(String message) {
+    protected BearerTokenException(String errorCode, int httpStatus, String message) {
         super(message);
-        this.error = null;
+        this.errorCode = errorCode;
+        this.httpStatus = httpStatus;
     }
 
-    public BearerTokenException(BearerTokenError error, String message) {
-        super(message);
-        Objects.requireNonNull(error, "error must not be null");
-        this.error = error;
+    public String getErrorCode() {
+        return this.errorCode;
     }
 
-    public BearerTokenException(BearerTokenError error) {
-        this(error, error.getCode());
-    }
-
-    public int getStatus() {
-        return (this.error != null) ? this.error.getStatus() : 401;
-    }
-
-    public BearerTokenError getError() {
-        return this.error;
+    public int getHttpStatus() {
+        return this.httpStatus;
     }
 
 }

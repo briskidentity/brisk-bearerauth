@@ -52,7 +52,7 @@ public class MicronautBearerAuthenticationFilter extends OncePerRequestHttpServe
 
     private static Flowable<MutableHttpResponse<?>> handleBearerTokenException(BearerTokenException ex) {
         String wwwAuthenticate = WwwAuthenticateBuilder.from(ex).build();
-        MutableHttpResponse<Object> response = HttpResponse.status(HttpStatus.valueOf(ex.getStatus()));
+        MutableHttpResponse<Object> response = HttpResponse.status(HttpStatus.valueOf(ex.getHttpStatus()));
         response.getHeaders().set(HttpHeaders.WWW_AUTHENTICATE, wwwAuthenticate);
         return Flowable.just(response);
     }

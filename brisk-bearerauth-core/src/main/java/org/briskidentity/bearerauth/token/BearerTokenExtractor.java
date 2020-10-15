@@ -1,7 +1,7 @@
 package org.briskidentity.bearerauth.token;
 
 import org.briskidentity.bearerauth.http.ProtectedResourceRequest;
-import org.briskidentity.bearerauth.token.error.BearerTokenException;
+import org.briskidentity.bearerauth.token.error.MissingBearerTokenException;
 
 /**
  * A strategy used for extracting bearer token from the protected resource request.
@@ -14,7 +14,7 @@ public interface BearerTokenExtractor {
      * @param request the protected resource request
      * @return the bearer token
      */
-    BearerToken extract(ProtectedResourceRequest request) throws BearerTokenException;
+    BearerToken extract(ProtectedResourceRequest request) throws MissingBearerTokenException;
 
     /**
      * @return the authorization header bearer token extractor
