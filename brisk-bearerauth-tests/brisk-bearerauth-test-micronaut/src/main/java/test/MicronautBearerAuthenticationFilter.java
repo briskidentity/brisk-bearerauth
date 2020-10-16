@@ -15,6 +15,7 @@ import org.briskidentity.bearerauth.context.PropertiesAuthorizationContextResolv
 import org.briskidentity.bearerauth.http.ProtectedResourceRequest;
 import org.briskidentity.bearerauth.http.WwwAuthenticateBuilder;
 import org.briskidentity.bearerauth.token.BearerTokenExtractor;
+import org.briskidentity.bearerauth.token.error.BearerTokenError;
 import org.briskidentity.bearerauth.token.error.BearerTokenException;
 import org.reactivestreams.Publisher;
 
@@ -39,20 +40,20 @@ public class MicronautBearerAuthenticationFilter extends OncePerRequestHttpServe
                     request.setAttribute(HttpAttributes.PRINCIPAL, authorizationContext);
                     return chain.proceed(request);
                 })
-                .onErrorResumeNext(th -> {
-                    if (th instanceof BearerTokenException) {
-                        return handleBearerTokenException((BearerTokenException) th);
+                .onErrorResumeNext(ex -> {
+                    if (ex instanceof BearerTokenException) {
+                        return handleBearerTokenError(((BearerTokenException) ex).getError());
                     }
-                    if (th.getCause() instanceof BearerTokenException) {
-                        return handleBearerTokenException((BearerTokenException) th.getCause());
+                    if (ex.getCause() instanceof BearerTokenException) {
+                        return handleBearerTokenError(((BearerTokenException) ex.getCause()).getError());
                     }
-                    return Flowable.error(th);
+                    return Flowable.error(ex);
                 });
     }
 
-    private static Flowable<MutableHttpResponse<?>> handleBearerTokenException(BearerTokenException ex) {
-        String wwwAuthenticate = WwwAuthenticateBuilder.from(ex).build();
-        MutableHttpResponse<Object> response = HttpResponse.status(HttpStatus.valueOf(ex.getHttpStatus()));
+    private static Flowable<MutableHttpResponse<?>> handleBearerTokenError(BearerTokenError bearerTokenError) {
+        String wwwAuthenticate = WwwAuthenticateBuilder.from(bearerTokenError).build();
+        MutableHttpResponse<Object> response = HttpResponse.status(HttpStatus.valueOf(bearerTokenError.getHttpStatus()));
         response.getHeaders().set(HttpHeaders.WWW_AUTHENTICATE, wwwAuthenticate);
         return Flowable.just(response);
     }

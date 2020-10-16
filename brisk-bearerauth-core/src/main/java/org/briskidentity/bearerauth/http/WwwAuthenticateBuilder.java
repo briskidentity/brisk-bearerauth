@@ -1,6 +1,6 @@
 package org.briskidentity.bearerauth.http;
 
-import org.briskidentity.bearerauth.token.error.BearerTokenException;
+import org.briskidentity.bearerauth.token.error.BearerTokenError;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,22 +11,22 @@ import java.util.Objects;
  */
 public final class WwwAuthenticateBuilder {
 
-    private final BearerTokenException bearerTokenException;
+    private final BearerTokenError bearerTokenError;
 
     private String realm;
 
-    private WwwAuthenticateBuilder(BearerTokenException bearerTokenException) {
-        Objects.requireNonNull(bearerTokenException, "bearerTokenException must not be null");
-        this.bearerTokenException = bearerTokenException;
+    private WwwAuthenticateBuilder(BearerTokenError bearerTokenError) {
+        Objects.requireNonNull(bearerTokenError, "bearerTokenError must not be null");
+        this.bearerTokenError = bearerTokenError;
     }
 
     /**
-     * Create a builder instance for given bearer token exception.
-     * @param bearerTokenException the bearer token exception
+     * Create a builder instance for given bearer token error.
+     * @param bearerTokenError the bearer token error
      * @return the builder instance
      */
-    public static WwwAuthenticateBuilder from(BearerTokenException bearerTokenException) {
-        return new WwwAuthenticateBuilder(bearerTokenException);
+    public static WwwAuthenticateBuilder from(BearerTokenError bearerTokenError) {
+        return new WwwAuthenticateBuilder(bearerTokenError);
     }
 
     /**
@@ -50,7 +50,7 @@ public final class WwwAuthenticateBuilder {
         if (this.realm != null) {
             attributes.add(buildAttribute("realm", this.realm));
         }
-        String errorCode = this.bearerTokenException.getErrorCode();
+        String errorCode = this.bearerTokenError.getErrorCode();
         if (errorCode != null) {
             attributes.add(buildAttribute("error", errorCode));
         }

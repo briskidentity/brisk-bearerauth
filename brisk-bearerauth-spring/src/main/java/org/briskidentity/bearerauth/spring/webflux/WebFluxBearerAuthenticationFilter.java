@@ -5,9 +5,11 @@ import org.briskidentity.bearerauth.context.AuthorizationContextResolver;
 import org.briskidentity.bearerauth.http.ProtectedResourceRequest;
 import org.briskidentity.bearerauth.http.WwwAuthenticateBuilder;
 import org.briskidentity.bearerauth.token.BearerTokenExtractor;
+import org.briskidentity.bearerauth.token.error.BearerTokenError;
 import org.briskidentity.bearerauth.token.error.BearerTokenException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.ServerWebExchangeDecorator;
 import org.springframework.web.server.WebFilter;
@@ -40,12 +42,14 @@ public class WebFluxBearerAuthenticationFilter implements WebFilter {
         return Mono.defer(() -> Mono.just(this.bearerTokenExtractor.extract(new WebFluxProtectedResourceRequest(exchange))))
                 .flatMap(bearerToken -> Mono.fromCompletionStage(this.authorizationContextResolver.resolve(bearerToken)))
                 .flatMap(authorizationContext -> chain.filter(new AuthorizedExchange(exchange, authorizationContext)))
-                .onErrorResume(BearerTokenException.class, ex -> {
-                    String wwwAuthenticate = WwwAuthenticateBuilder.from(ex).build();
-                    exchange.getResponse().getHeaders().set(HttpHeaders.WWW_AUTHENTICATE, wwwAuthenticate);
-                    exchange.getResponse().setStatusCode(HttpStatus.resolve(ex.getHttpStatus()));
-                    return Mono.empty();
-                });
+                .onErrorResume(BearerTokenException.class, ex -> handleBearerTokenError(ex.getError(), exchange.getResponse()));
+    }
+
+    private Mono<Void> handleBearerTokenError(BearerTokenError bearerTokenError, ServerHttpResponse response) {
+        String wwwAuthenticate = WwwAuthenticateBuilder.from(bearerTokenError).build();
+        response.getHeaders().set(HttpHeaders.WWW_AUTHENTICATE, wwwAuthenticate);
+        response.setStatusCode(HttpStatus.resolve(bearerTokenError.getHttpStatus()));
+        return Mono.empty();
     }
 
     private static class WebFluxProtectedResourceRequest implements ProtectedResourceRequest {

@@ -3,7 +3,7 @@ package org.briskidentity.bearerauth.spring.servlet;
 import org.briskidentity.bearerauth.context.AuthorizationContext;
 import org.briskidentity.bearerauth.http.WwwAuthenticateBuilder;
 import org.briskidentity.bearerauth.spring.RequiresScope;
-import org.briskidentity.bearerauth.token.error.InsufficientScopeException;
+import org.briskidentity.bearerauth.token.error.BearerTokenError;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.AsyncHandlerInterceptor;
 
@@ -28,10 +28,10 @@ public class AuthorizationContextScopeInterceptor implements AsyncHandlerInterce
                 return true;
             }
         }
-        InsufficientScopeException ex = new InsufficientScopeException();
-        String wwwAuthenticate = WwwAuthenticateBuilder.from(ex).build();
+        BearerTokenError bearerTokenError = BearerTokenError.INSUFFICIENT_SCOPE;
+        String wwwAuthenticate = WwwAuthenticateBuilder.from(bearerTokenError).build();
         response.addHeader("WWW-Authenticate", wwwAuthenticate);
-        response.sendError(ex.getHttpStatus());
+        response.sendError(bearerTokenError.getHttpStatus());
         return false;
     }
 

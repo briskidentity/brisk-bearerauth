@@ -6,6 +6,7 @@ import org.briskidentity.bearerauth.http.ProtectedResourceRequest;
 import org.briskidentity.bearerauth.http.WwwAuthenticateBuilder;
 import org.briskidentity.bearerauth.token.BearerToken;
 import org.briskidentity.bearerauth.token.BearerTokenExtractor;
+import org.briskidentity.bearerauth.token.error.BearerTokenError;
 import org.briskidentity.bearerauth.token.error.BearerTokenException;
 
 import javax.servlet.Filter;
@@ -60,12 +61,12 @@ public class ServletBearerAuthenticationFilter implements Filter {
             chain.doFilter(new AuthorizedRequest(req, authorizationContext), response);
         }
         catch (BearerTokenException ex) {
-            handleBearerTokenException(ex, res);
+            handleBearerTokenError(ex.getError(), res);
         }
         catch (CompletionException ex) {
             Throwable cause = ex.getCause();
             if (cause instanceof BearerTokenException) {
-                handleBearerTokenException((BearerTokenException) cause, res);
+                handleBearerTokenError(((BearerTokenException) cause).getError(), res);
             }
             else {
                 throw new ServletException(cause);
@@ -76,11 +77,11 @@ public class ServletBearerAuthenticationFilter implements Filter {
         }
     }
 
-    private static void handleBearerTokenException(BearerTokenException ex, HttpServletResponse response)
+    private static void handleBearerTokenError(BearerTokenError bearerTokenError, HttpServletResponse response)
             throws IOException {
-        String wwwAuthenticate = WwwAuthenticateBuilder.from(ex).build();
+        String wwwAuthenticate = WwwAuthenticateBuilder.from(bearerTokenError).build();
         response.addHeader("WWW-Authenticate", wwwAuthenticate);
-        response.sendError(ex.getHttpStatus());
+        response.sendError(bearerTokenError.getHttpStatus());
     }
 
     @Override
