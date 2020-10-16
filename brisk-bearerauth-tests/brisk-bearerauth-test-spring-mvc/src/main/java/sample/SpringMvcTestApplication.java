@@ -2,6 +2,7 @@ package sample;
 
 import org.briskidentity.bearerauth.context.PropertiesAuthorizationContextResolver;
 import org.briskidentity.bearerauth.servlet.ServletBearerAuthenticationFilter;
+import org.briskidentity.bearerauth.spring.RequiresScope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -26,6 +27,7 @@ public class SpringMvcTestApplication {
     }
 
     @GetMapping(path = "/resource")
+    @RequiresScope("scope:read")
     public String greet(WebRequest webRequest) {
         logger.info("Principal: {}", webRequest.getUserPrincipal());
         return "Hello World!";

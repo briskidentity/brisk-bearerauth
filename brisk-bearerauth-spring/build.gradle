@@ -18,6 +18,8 @@ dependencies {
     webMvcSupportApi(project(":brisk-bearerauth-servlet"))
     webMvcSupportApi("org.springframework:spring-webmvc")
 
+    webMvcSupportCompileOnly("javax.servlet:javax.servlet-api")
+
     webFluxSupportApi(project(":brisk-bearerauth-core"))
     webFluxSupportApi("org.springframework:spring-webflux")
 
