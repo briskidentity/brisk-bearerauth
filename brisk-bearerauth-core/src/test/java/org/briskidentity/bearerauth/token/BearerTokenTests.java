@@ -18,6 +18,7 @@ class BearerTokenTests {
     }
 
     @Test
+    @SuppressWarnings("ConstantConditions")
     void isSerializable_ValidValue_ShouldReturnTrue() {
         assertThat(new BearerToken("test") instanceof Serializable).isTrue();
     }
