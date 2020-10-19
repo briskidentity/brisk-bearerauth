@@ -65,12 +65,10 @@ public class ServletBearerAuthenticationFilter implements Filter {
         }
         catch (CompletionException ex) {
             Throwable cause = ex.getCause();
-            if (cause instanceof BearerTokenException) {
-                handleBearerTokenError(((BearerTokenException) cause).getError(), res);
-            }
-            else {
+            if (!(cause instanceof BearerTokenException)) {
                 throw new ServletException(cause);
             }
+            handleBearerTokenError(((BearerTokenException) cause).getError(), res);
         }
         catch (CancellationException ex) {
             throw new ServletException(ex);

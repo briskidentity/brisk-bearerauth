@@ -2,6 +2,7 @@ package org.briskidentity.bearerauth.context.validation;
 
 import org.briskidentity.bearerauth.context.AuthorizationContext;
 
+import java.util.Collection;
 import java.util.concurrent.CompletionStage;
 
 /**
@@ -18,5 +19,9 @@ public interface AuthorizationContextValidator {
      * @return the completion stage indicating validation outcome
      */
     CompletionStage<Void> validate(AuthorizationContext authorizationContext);
+
+    static AuthorizationContextValidator scope(Collection<String> requiredScopeValues) {
+        return new ScopeAuthorizationContextValidator(requiredScopeValues);
+    }
 
 }

@@ -1,9 +1,12 @@
 package org.briskidentity.bearerauth.spring.servlet;
 
 import org.briskidentity.bearerauth.context.AuthorizationContext;
+import org.briskidentity.bearerauth.context.validation.AuthorizationContextValidator;
 import org.briskidentity.bearerauth.http.WwwAuthenticateBuilder;
 import org.briskidentity.bearerauth.spring.RequiresScope;
 import org.briskidentity.bearerauth.token.error.BearerTokenError;
+import org.briskidentity.bearerauth.token.error.BearerTokenException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.AsyncHandlerInterceptor;
 
@@ -11,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.concurrent.CompletionException;
 
 public class AuthorizationContextScopeInterceptor implements AsyncHandlerInterceptor {
 
@@ -22,17 +26,30 @@ public class AuthorizationContextScopeInterceptor implements AsyncHandlerInterce
         if (requiresScope == null) {
             return true;
         }
-        if (request.getUserPrincipal() instanceof AuthorizationContext) {
-            AuthorizationContext authorizationContext = (AuthorizationContext) request.getUserPrincipal();
-            if (authorizationContext.getScopeValues().containsAll(Arrays.asList(requiresScope.value()))) {
-                return true;
-            }
+        if (!(request.getUserPrincipal() instanceof AuthorizationContext)) {
+            throw new IllegalStateException("Authorization context cannot be resolved");
         }
-        BearerTokenError bearerTokenError = BearerTokenError.INSUFFICIENT_SCOPE;
+        AuthorizationContext authorizationContext = (AuthorizationContext) request.getUserPrincipal();
+        try {
+            AuthorizationContextValidator.scope(Arrays.asList(requiresScope.value())).validate(authorizationContext)
+                    .toCompletableFuture().join();
+        }
+        catch (CompletionException ex) {
+            Throwable cause = ex.getCause();
+            if (!(cause instanceof BearerTokenException)) {
+                throw ex;
+            }
+            handleBearerTokenError(((BearerTokenException) cause).getError(), response);
+            return false;
+        }
+        return true;
+    }
+
+    private static void handleBearerTokenError(BearerTokenError bearerTokenError, HttpServletResponse response)
+            throws IOException {
         String wwwAuthenticate = WwwAuthenticateBuilder.from(bearerTokenError).build();
-        response.addHeader("WWW-Authenticate", wwwAuthenticate);
+        response.addHeader(HttpHeaders.WWW_AUTHENTICATE, wwwAuthenticate);
         response.sendError(bearerTokenError.getHttpStatus());
-        return false;
     }
 
 }
