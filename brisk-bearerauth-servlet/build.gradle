@@ -1,14 +1,14 @@
 plugins {
-    id("bearerauth.library-conventions")
+	id("bearerauth.library-conventions")
 }
 
 dependencies {
-    api(project(":brisk-bearerauth-core"))
+	api(project(":brisk-bearerauth-core"))
 
-    compileOnly("javax.servlet:javax.servlet-api")
+	compileOnly("javax.servlet:javax.servlet-api")
 
-    testImplementation("org.assertj:assertj-core")
-    testImplementation("org.junit.jupiter:junit-jupiter-api")
+	testImplementation("org.assertj:assertj-core")
+	testImplementation("org.junit.jupiter:junit-jupiter-api")
 
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+	testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
 }

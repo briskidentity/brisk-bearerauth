@@ -1,12 +1,12 @@
 buildscript {
-    apply(from: "${rootDir.parentFile}/gradle/dependency-versions.gradle")
+	apply(from: "${rootDir.parentFile}/gradle/dependency-versions.gradle")
 
-    repositories {
-        gradlePluginPortal()
-    }
+	repositories {
+		gradlePluginPortal()
+	}
 
-    dependencies {
-        classpath("com.diffplug.spotless:spotless-plugin-gradle:${pluginVersions.spotless}")
-        classpath("com.github.ben-manes:gradle-versions-plugin:${pluginVersions.versions}")
-    }
+	dependencies {
+		classpath("com.diffplug.spotless:spotless-plugin-gradle:${pluginVersions.spotless}")
+		classpath("com.github.ben-manes:gradle-versions-plugin:${pluginVersions.versions}")
+	}
 }

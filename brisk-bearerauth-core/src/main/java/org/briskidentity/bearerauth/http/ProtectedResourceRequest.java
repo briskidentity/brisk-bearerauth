@@ -21,16 +21,16 @@ package org.briskidentity.bearerauth.http;
  */
 public interface ProtectedResourceRequest {
 
-    /**
-     * Get the first occurrence of request's authorization header.
-     * @return the authorization header value
-     */
-    String getAuthorizationHeader();
+	/**
+	 * Get the first occurrence of request's authorization header.
+	 * @return the authorization header value
+	 */
+	String getAuthorizationHeader();
 
-    /**
-     * Get the native request.
-     * @return the native request
-     */
-    <T> T getNativeRequest();
+	/**
+	 * Get the native request.
+	 * @return the native request
+	 */
+	<T> T getNativeRequest();
 
 }

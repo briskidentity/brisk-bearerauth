@@ -1,14 +1,14 @@
 buildscript {
-    apply(from: "gradle/dependency-versions.gradle")
+	apply(from: "gradle/dependency-versions.gradle")
 
-    repositories {
-        gradlePluginPortal()
-    }
+	repositories {
+		gradlePluginPortal()
+	}
 
-    dependencies {
-        classpath("com.diffplug.spotless:spotless-plugin-gradle:${pluginVersions.spotless}")
-        classpath("com.github.ben-manes:gradle-versions-plugin:${pluginVersions.versions}")
-    }
+	dependencies {
+		classpath("com.diffplug.spotless:spotless-plugin-gradle:${pluginVersions.spotless}")
+		classpath("com.github.ben-manes:gradle-versions-plugin:${pluginVersions.versions}")
+	}
 }
 
 rootProject.name = "brisk-bearerauth"
@@ -20,6 +20,6 @@ include("brisk-bearerauth-servlet")
 include("brisk-bearerauth-spring")
 
 file("${rootDir}/brisk-bearerauth-tests").eachDirMatch(~/brisk-bearerauth-test-.*/) {
-    include(it.name)
-    project(":${it.name}").projectDir = it
+	include(it.name)
+	project(":${it.name}").projectDir = it
 }

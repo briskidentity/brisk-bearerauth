@@ -26,12 +26,12 @@ import org.slf4j.LoggerFactory;
 @Controller("/resource")
 public class TestController {
 
-    private static final Logger logger = LoggerFactory.getLogger(TestController.class);
+	private static final Logger logger = LoggerFactory.getLogger(TestController.class);
 
-    @Get(produces = MediaType.TEXT_PLAIN)
-    public String greet(HttpRequest<?> request) {
-        logger.info("Principal: {}", request.getUserPrincipal());
-        return "Hello World!";
-    }
+	@Get(produces = MediaType.TEXT_PLAIN)
+	public String greet(HttpRequest<?> request) {
+		logger.info("Principal: {}", request.getUserPrincipal());
+		return "Hello World!";
+	}
 
 }

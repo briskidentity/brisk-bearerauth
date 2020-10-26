@@ -1,41 +1,41 @@
 import static org.briskidentity.bearerauth.build.DependencyVersionHelper.isStable
 
 plugins {
-    id("java")
-    id("com.diffplug.spotless")
-    id("com.github.ben-manes.versions")
+	id("java")
+	id("com.diffplug.spotless")
+	id("com.github.ben-manes.versions")
 }
 
 repositories {
-    mavenCentral()
+	mavenCentral()
 }
 
 dependencyLocking {
-    lockAllConfigurations()
+	lockAllConfigurations()
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
+	sourceCompatibility = JavaVersion.VERSION_1_8
 }
 
 compileJava {
-    options.compilerArgs += ["-Werror", "-Xlint:unchecked", "-Xlint:deprecation", "-Xlint:rawtypes", "-Xlint:varargs"]
+	options.compilerArgs += ["-Werror", "-Xlint:unchecked", "-Xlint:deprecation", "-Xlint:rawtypes", "-Xlint:varargs"]
 }
 
 test {
-    maxHeapSize = "1g"
-    useJUnitPlatform()
+	maxHeapSize = "1g"
+	useJUnitPlatform()
 }
 
 spotless {
-    java {
-        licenseHeaderFile(rootProject.file("config/spotless/license.java"))
-    }
+	java {
+		licenseHeaderFile(rootProject.file("config/spotless/license.java"))
+	}
 }
 
 dependencyUpdates {
-    gradleReleaseChannel = "current"
-    rejectVersionIf {
-        isStable(it.currentVersion) && !isStable(it.candidate.version)
-    }
+	gradleReleaseChannel = "current"
+	rejectVersionIf {
+		isStable(it.currentVersion) && !isStable(it.candidate.version)
+	}
 }

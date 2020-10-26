@@ -16,9 +16,9 @@
 
 package org.briskidentity.bearerauth.context;
 
-import org.briskidentity.bearerauth.token.BearerToken;
-
 import java.util.concurrent.CompletionStage;
+
+import org.briskidentity.bearerauth.token.BearerToken;
 
 /**
  * A strategy used for resolving authorization context attached to a bearer access token.
@@ -26,11 +26,11 @@ import java.util.concurrent.CompletionStage;
 @FunctionalInterface
 public interface AuthorizationContextResolver {
 
-    /**
-     * Resolve the authorization context from given bearer token.
-     * @param bearerToken the bearer token
-     * @return the authorization context
-     */
-    CompletionStage<AuthorizationContext> resolve(BearerToken bearerToken);
+	/**
+	 * Resolve the authorization context from given bearer token.
+	 * @param bearerToken the bearer token
+	 * @return the authorization context
+	 */
+	CompletionStage<AuthorizationContext> resolve(BearerToken bearerToken);
 
 }

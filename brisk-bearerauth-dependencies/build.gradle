@@ -1,23 +1,23 @@
 plugins {
-    id("java-platform")
+	id("java-platform")
 }
 
 apply(from: "${rootDir}/gradle/dependency-versions.gradle")
 
 dependencies {
-    constraints {
-        api("javax.servlet:javax.servlet-api:${libraryVersions.servletApi}")
+	constraints {
+		api("javax.servlet:javax.servlet-api:${libraryVersions.servletApi}")
 
-        api("ch.qos.logback:logback-classic:${testLibraryVersions.logback}")
-        api("org.assertj:assertj-core:${testLibraryVersions.assertj}")
-        api("org.eclipse.jetty:jetty-servlet:${testLibraryVersions.jetty}")
-        api("org.mockito:mockito-core:${testLibraryVersions.mockito}")
-    }
+		api("ch.qos.logback:logback-classic:${testLibraryVersions.logback}")
+		api("org.assertj:assertj-core:${testLibraryVersions.assertj}")
+		api("org.eclipse.jetty:jetty-servlet:${testLibraryVersions.jetty}")
+		api("org.mockito:mockito-core:${testLibraryVersions.mockito}")
+	}
 
-    api(platform("org.springframework:spring-framework-bom:${libraryVersions.springFramework}"))
-    api(platform("org.junit:junit-bom:${testLibraryVersions.junit}"))
+	api(platform("org.springframework:spring-framework-bom:${libraryVersions.springFramework}"))
+	api(platform("org.junit:junit-bom:${testLibraryVersions.junit}"))
 }
 
 javaPlatform {
-    allowDependencies()
+	allowDependencies()
 }

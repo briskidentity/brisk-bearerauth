@@ -1,42 +1,42 @@
 plugins {
-    id("bearerauth.java-conventions")
-    id("bearerauth.publish-conventions")
-    id("java-library")
+	id("bearerauth.java-conventions")
+	id("bearerauth.publish-conventions")
+	id("java-library")
 }
 
 configurations {
-    internal {
-        visible = false
-        canBeConsumed = false
-        canBeResolved = false
-    }
-    compileClasspath.extendsFrom(internal)
-    runtimeClasspath.extendsFrom(internal)
-    testCompileClasspath.extendsFrom(internal)
-    testRuntimeClasspath.extendsFrom(internal)
+	internal {
+		visible = false
+		canBeConsumed = false
+		canBeResolved = false
+	}
+	compileClasspath.extendsFrom(internal)
+	runtimeClasspath.extendsFrom(internal)
+	testCompileClasspath.extendsFrom(internal)
+	testRuntimeClasspath.extendsFrom(internal)
 }
 
 dependencies {
-    internal(platform(project(":brisk-bearerauth-dependencies")))
+	internal(platform(project(":brisk-bearerauth-dependencies")))
 }
 
 java {
-    withJavadocJar()
-    withSourcesJar()
+	withJavadocJar()
+	withSourcesJar()
 }
 
 publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            from(components.java)
-            versionMapping {
-                usage("java-api") {
-                    fromResolutionResult()
-                }
-                usage("java-runtime") {
-                    fromResolutionResult()
-                }
-            }
-        }
-    }
+	publications {
+		mavenJava(MavenPublication) {
+			from(components.java)
+			versionMapping {
+				usage("java-api") {
+					fromResolutionResult()
+				}
+				usage("java-runtime") {
+					fromResolutionResult()
+				}
+			}
+		}
+	}
 }

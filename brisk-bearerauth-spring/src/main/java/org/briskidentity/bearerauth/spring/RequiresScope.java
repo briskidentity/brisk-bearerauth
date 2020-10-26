@@ -27,6 +27,6 @@ import java.lang.annotation.Target;
 @Documented
 public @interface RequiresScope {
 
-    String[] value() default {};
+	String[] value() default {};
 
 }

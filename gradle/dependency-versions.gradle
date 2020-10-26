@@ -1,7 +1,7 @@
 ext {
-    libraryVersions = [:]
-    pluginVersions = [:]
-    testLibraryVersions = [:]
+	libraryVersions = [:]
+	pluginVersions = [:]
+	testLibraryVersions = [:]
 }
 
 libraryVersions.servletApi = "3.1.+"

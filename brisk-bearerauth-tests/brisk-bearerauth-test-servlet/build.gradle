@@ -1,15 +1,15 @@
 plugins {
-    id("bearerauth.java-conventions")
-    id("application")
+	id("bearerauth.java-conventions")
+	id("application")
 }
 
 apply(from: "${rootDir}/gradle/dependency-versions.gradle")
 
 dependencies {
-    implementation(project(":brisk-bearerauth-servlet"))
-    implementation("org.eclipse.jetty:jetty-servlet:${testLibraryVersions.jetty}")
+	implementation(project(":brisk-bearerauth-servlet"))
+	implementation("org.eclipse.jetty:jetty-servlet:${testLibraryVersions.jetty}")
 }
 
 application {
-    mainClass = "sample.ServletTestApplication"
+	mainClass = "sample.ServletTestApplication"
 }

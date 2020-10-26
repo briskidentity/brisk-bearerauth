@@ -16,17 +16,18 @@
 
 package sample;
 
-import org.briskidentity.bearerauth.spring.servlet.AuthorizationContextScopeInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import org.briskidentity.bearerauth.spring.servlet.AuthorizationContextScopeInterceptor;
+
 @Configuration
 public class WebMvcConfiguration implements WebMvcConfigurer {
 
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new AuthorizationContextScopeInterceptor());
-    }
+	@Override
+	public void addInterceptors(InterceptorRegistry registry) {
+		registry.addInterceptor(new AuthorizationContextScopeInterceptor());
+	}
 
 }

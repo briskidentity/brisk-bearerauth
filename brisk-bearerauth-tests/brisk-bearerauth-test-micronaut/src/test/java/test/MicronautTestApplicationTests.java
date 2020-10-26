@@ -22,8 +22,8 @@ import org.junit.jupiter.api.Test;
 @MicronautTest
 class MicronautTestApplicationTests {
 
-    @Test
-    void contextLoads() {
-    }
+	@Test
+	void contextLoads() {
+	}
 
 }

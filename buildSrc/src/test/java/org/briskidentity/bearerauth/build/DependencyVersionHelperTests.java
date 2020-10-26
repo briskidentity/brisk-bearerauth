@@ -22,9 +22,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class DependencyVersionHelperTests {
 
-    @Test
-    void isStable() {
-        assertTrue(DependencyVersionHelper.isStable("1.0.0"));
-    }
+	@Test
+	void isStable() {
+		assertTrue(DependencyVersionHelper.isStable("1.0.0"));
+	}
 
 }

@@ -25,18 +25,18 @@ import org.briskidentity.bearerauth.token.error.BearerTokenException;
 @FunctionalInterface
 public interface BearerTokenExtractor {
 
-    /**
-     * Extract the bearer token from the given protected resource request.
-     * @param request the protected resource request
-     * @return the bearer token
-     */
-    BearerToken extract(ProtectedResourceRequest request) throws BearerTokenException;
+	/**
+	 * Extract the bearer token from the given protected resource request.
+	 * @param request the protected resource request
+	 * @return the bearer token
+	 */
+	BearerToken extract(ProtectedResourceRequest request) throws BearerTokenException;
 
-    /**
-     * @return the authorization header bearer token extractor
-     */
-    static BearerTokenExtractor authorizationHeader() {
-        return AuthorizationHeaderBearerTokenExtractor.INSTANCE;
-    }
+	/**
+	 * @return the authorization header bearer token extractor
+	 */
+	static BearerTokenExtractor authorizationHeader() {
+		return AuthorizationHeaderBearerTokenExtractor.INSTANCE;
+	}
 
 }
