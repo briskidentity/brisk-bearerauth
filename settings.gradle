@@ -1,3 +1,16 @@
+buildscript {
+    apply(from: "gradle/dependency-versions.gradle")
+
+    repositories {
+        gradlePluginPortal()
+    }
+
+    dependencies {
+        classpath("com.diffplug.spotless:spotless-plugin-gradle:${pluginVersions.spotless}")
+        classpath("com.github.ben-manes:gradle-versions-plugin:${pluginVersions.versions}")
+    }
+}
+
 rootProject.name = "brisk-bearerauth"
 
 include("brisk-bearerauth-bom")

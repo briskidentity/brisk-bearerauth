@@ -7,6 +7,7 @@ ext {
 libraryVersions.servletApi = "3.1.+"
 libraryVersions.springFramework = "5.1.+"
 
+pluginVersions.spotless = "+"
 pluginVersions.versions = "+"
 
 testLibraryVersions.assertj = "3.+"

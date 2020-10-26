@@ -1,5 +1,6 @@
 plugins {
     id("groovy-gradle-plugin")
+    id("com.diffplug.spotless")
     id("com.github.ben-manes.versions")
 }
 
@@ -15,8 +16,6 @@ dependencyLocking {
 }
 
 dependencies {
-    implementation("com.github.ben-manes:gradle-versions-plugin:${pluginVersions.versions}")
-
     testImplementation(platform("org.junit:junit-bom:${testLibraryVersions.junit}"))
     testImplementation("org.assertj:assertj-core:${testLibraryVersions.assertj}")
     testImplementation("org.junit.jupiter:junit-jupiter-api")
@@ -30,4 +29,11 @@ java {
 
 test {
     useJUnitPlatform()
+}
+
+spotless {
+    java {
+        licenseHeaderFile(rootProject.file("../config/spotless/license.java"))
+        targetExclude("build/**/*.java")
+    }
 }

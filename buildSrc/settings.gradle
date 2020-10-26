@@ -6,6 +6,7 @@ buildscript {
     }
 
     dependencies {
+        classpath("com.diffplug.spotless:spotless-plugin-gradle:${pluginVersions.spotless}")
         classpath("com.github.ben-manes:gradle-versions-plugin:${pluginVersions.versions}")
     }
 }
