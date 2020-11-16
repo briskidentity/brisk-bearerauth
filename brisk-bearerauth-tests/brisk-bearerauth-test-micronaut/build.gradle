@@ -31,5 +31,5 @@ dependencies {
 }
 
 application {
-	mainClassName = "test.SampleMicronautApplication"
+	mainClass = "test.SampleMicronautApplication"
 }
