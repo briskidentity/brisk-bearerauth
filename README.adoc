@@ -12,6 +12,10 @@ Primary goals of this framework are:
 
 The framework consists of several modules.
 
+=== brisk-bearerauth-bom
+
+This module provides the BOM for Brisk BearerAuth.
+
 === brisk-bearerauth-core
 
 This module provides the core functionality of Brisk BearerAuth.
