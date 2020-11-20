@@ -1,4 +1,6 @@
-= Brisk BearerAuth image:https://travis-ci.com/briskidentity/brisk-bearerauth.svg?branch=master["Build Status", link="https://travis-ci.com/briskidentity/brisk-bearerauth"]
+= Brisk BearerAuth
+
+image:https://github.com/briskidentity/brisk-bearerauth/workflows/CI/badge.svg["Build Status", link="https://github.com/briskidentity/brisk-bearerauth/actions?query=workflow%3ACI"]
 
 Brisk BearerAuth is a simple bearer token authentication framework for Java.
 
