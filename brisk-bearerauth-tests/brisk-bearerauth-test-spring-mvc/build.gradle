@@ -1,19 +1,9 @@
 import org.springframework.boot.gradle.plugin.SpringBootPlugin
 
-buildscript {
-	apply(from: "${rootDir}/gradle/dependency-versions.gradle")
-
-	repositories {
-		gradlePluginPortal()
-	}
-
-	dependencies {
-		classpath("org.springframework.boot:spring-boot-gradle-plugin:${testLibraryVersions.springBoot}")
-	}
+plugins {
+	id("bearerauth.java-conventions")
+	id("org.springframework.boot").version("2.4.0")
 }
-
-apply(plugin: "bearerauth.java-conventions")
-apply(plugin: "org.springframework.boot")
 
 dependencies {
 	implementation(project(":brisk-bearerauth-spring")) {

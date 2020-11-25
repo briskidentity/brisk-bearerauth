@@ -22,9 +22,4 @@ dependencies {
 
 	webFluxSupportApi(project(":brisk-bearerauth-core"))
 	webFluxSupportApi("org.springframework:spring-webflux")
-
-	testImplementation("org.assertj:assertj-core")
-	testImplementation("org.junit.jupiter:junit-jupiter-api")
-
-	testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
 }

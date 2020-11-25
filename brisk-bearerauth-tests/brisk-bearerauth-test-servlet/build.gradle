@@ -3,11 +3,9 @@ plugins {
 	id("application")
 }
 
-apply(from: "${rootDir}/gradle/dependency-versions.gradle")
-
 dependencies {
 	implementation(project(":brisk-bearerauth-servlet"))
-	implementation("org.eclipse.jetty:jetty-servlet:${testLibraryVersions.jetty}")
+	implementation("org.eclipse.jetty:jetty-servlet:9.4.+")
 }
 
 application {

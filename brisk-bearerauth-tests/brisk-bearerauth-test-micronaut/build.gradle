@@ -3,7 +3,9 @@ plugins {
 	id("application")
 }
 
-apply(from: "${rootDir}/gradle/dependency-versions.gradle")
+ext {
+	micronautVersion = "2.2.+"
+}
 
 repositories {
 	jcenter()
@@ -11,20 +13,20 @@ repositories {
 
 dependencies {
 	implementation(project(":brisk-bearerauth-core"))
-	implementation(platform("io.micronaut:micronaut-bom:${testLibraryVersions.micronaut}"))
+	implementation(platform("io.micronaut:micronaut-bom:${micronautVersion}"))
 	implementation("io.micronaut:micronaut-http-server-netty")
 	implementation("io.micronaut:micronaut-inject")
 
-	annotationProcessor(platform("io.micronaut:micronaut-bom:${testLibraryVersions.micronaut}"))
+	annotationProcessor(platform("io.micronaut:micronaut-bom:${micronautVersion}"))
 	annotationProcessor("io.micronaut:micronaut-inject-java")
 
-	runtimeOnly("ch.qos.logback:logback-classic:${testLibraryVersions.logback}")
+	runtimeOnly("ch.qos.logback:logback-classic")
 
-	implementation(platform("io.micronaut.test:micronaut-test-bom:${testLibraryVersions.micronaut}"))
+	testImplementation(platform("io.micronaut.test:micronaut-test-bom:${micronautVersion}"))
 	testImplementation("io.micronaut.test:micronaut-test-junit5")
 	testImplementation("org.junit.jupiter:junit-jupiter-api")
 
-	testAnnotationProcessor(platform("io.micronaut:micronaut-bom:${testLibraryVersions.micronaut}"))
+	testAnnotationProcessor(platform("io.micronaut:micronaut-bom:${micronautVersion}"))
 	testAnnotationProcessor("io.micronaut:micronaut-inject-java")
 
 	testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")

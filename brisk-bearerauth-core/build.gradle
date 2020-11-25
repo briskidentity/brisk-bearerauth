@@ -1,11 +1,3 @@
 plugins {
 	id("bearerauth.library-conventions")
 }
-
-dependencies {
-	testImplementation("org.assertj:assertj-core")
-	testImplementation("org.mockito:mockito-core")
-	testImplementation("org.junit.jupiter:junit-jupiter-api")
-
-	testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
-}
